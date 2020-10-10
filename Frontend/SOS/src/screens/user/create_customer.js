@@ -1,0 +1,131 @@
+import React, {useState, navigation, useContext} from 'react';
+import { StyleSheet, ScrollView, View} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Input, Button, Text } from 'react-native-elements';
+
+export const CreateCustomer = () => {
+
+    const [contact, setContact] = useState('');
+    const [contactErr, setContactErr] = useState('');
+    const [contactFocus, setContactFocus] = useState(false);
+    const [contactErrStyle, setContactErrStyle] = useState(false);
+    const contactinput = React.createRef();
+
+
+    const [user, setUser] = useState('');
+    const [userErr, setUserErr] = useState('');
+    const [userFocus, setUserFocus] = useState(false);
+    const [userErrStyle, setUserErrStyle] = useState(false);
+    const userinput = React.createRef();
+    
+
+    const [shop, setShop] = useState('');
+    const [shopErr, setShopErr] = useState('');
+    const [shopFocus, setShopFocus] = useState(false);
+    const [shopErrStyle, setShopErrStyle] = useState(false);
+    const shopinput = React.createRef();
+    
+
+    const [address, setAddress] = useState('');
+    const [addressErr, setAddressErr] = useState('');
+    const [addressFocus, setAddressFocus] = useState(false);
+    const [addressErrStyle, setAddressErrStyle] = useState(false);
+    const addressinput = React.createRef();
+    
+
+    return(
+        <ScrollView>
+        <View style={styles.LoginView}>
+
+            <View style={{height:50}}></View>
+            <Text h4 style={{textTransform:'capitalize', color:'black'}}>New Customer</Text>
+            <View style={{height:20, borderBottomWidth:3, borderColor:'#2288dc', width:100}}></View>
+            <View style={{height:80}}></View>
+
+            <Input 
+                value = {contact}
+                disabled
+                ref={contactinput}
+                onFocus={() => setContactFocus(true)}
+                inputContainerStyle={[contactFocus ? styles.inputFocused : {}, contactErrStyle ? styles.inputErr : {} ]}
+                onChangeText = {(contact) => setContact(contact)}
+                maxLength={10}
+                keyboardType={'number-pad'}
+                placeholder='Enter Contact Number'
+                leftIcon={ <Icon name='phone' size={25} color='gray'/>}
+                errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                errorMessage={contactErr}
+            />
+
+
+            <Input 
+                value = {user}
+                ref={userinput}
+                onFocus={() => setUserFocus(true)}
+                inputContainerStyle={[userFocus ? styles.inputFocused : {}, userErrStyle ? styles.inputErr : {} ]}
+                onChangeText = {(user) => setUser(user)}
+                maxLength={100}
+                placeholder='Enter User Name'
+                leftIcon={ <Icon name='user' size={25} color='gray'/>}
+                errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                errorMessage={userErr}
+            />
+
+            <Input 
+                value = {shop}
+                ref={shopinput}
+                onFocus={() => setShopFocus(true)}
+                inputContainerStyle={[shopFocus ? styles.inputFocused : {}, shopErrStyle ? styles.inputErr : {} ]}
+                onChangeText = {(shop) => setShop(shop)}
+                maxLength={100}
+                placeholder='Enter Shop Name'
+                leftIcon={ <Icon name='home' size={25} color='gray'/>}
+                errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                errorMessage={shopErr}
+            />
+
+            <Input 
+                value = {address}
+                ref={addressinput}
+                onFocus={() => setAddressFocus(true)}
+                inputContainerStyle={[addressFocus ? styles.inputFocused : {}, addressErrStyle ? styles.inputErr : {} ]}
+                onChangeText = {(address) => setAddress(address)}
+                placeholder='Enter Address'
+                leftIcon={ <Icon name='map-marker' size={25} color='gray'/>}
+                errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                errorMessage={addressErr}
+            />
+
+       </View>
+
+    <View style={styles.Next_button}>
+       <Button buttonStyle={{backgroundColor:'#2288dc', borderRadius:100,  paddingLeft:50, paddingRight:30, padding:10, justifyContent:'space-between'}} title='Next' iconRight icon={<Icon name="arrow-right"  size={15} color="white"/>}></Button>
+    </View>
+
+</ScrollView>
+    )
+}
+
+
+const styles = StyleSheet.create({
+    LoginView: {
+        padding:20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    Next_button: {
+        padding:20,
+        marginTop:50
+    },
+
+    inputFocused: {
+       borderBottomColor: '#2288dc',
+       borderBottomWidth:2
+    },
+
+    inputErr: {
+       borderBottomColor: 'red',
+    },
+
+});
