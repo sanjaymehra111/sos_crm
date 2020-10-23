@@ -14,18 +14,61 @@ export const UserSpecficEmiDetails = (props) => {
         getfuncion();    
     },[])
 
+    const [AllDetails,setAllDetails] =useState([]);
     const [EmiDetails,setEmiDetails] =useState([]);
     const [BillDetails,setBillDetails] =useState([]);
 
     async function getfuncion(){
         const res = await GetLoggedInUserSpecEmiBillDetails('35');
+        setAllDetails([...res]);
         setEmiDetails([...res[0]]);
         setBillDetails([...res[1]]);
     }
 
     return(
 
-        <View><Text>hi</Text></View>
+        <View>
+
+<FlatList
+            data={BillDetails}
+            renderItem={({item})=>{
+                var ButtonStatus =  <Button title='' buttonStyle={{padding:0, backgroundColor:'white'}} icon={<MaterialCommunityIcons name="check-decagram" size={25} color="green" />} ></Button>;
+                var cur_date = FormatDate(item.date);
+                if(item.status == '0'){
+                    ButtonStatus = <Button title='' buttonStyle={{padding:0, backgroundColor:'white'}} icon={<MaterialCommunityIcons name="close-octagon" size={25} color="red" />} ></Button>
+                }
+
+                
+                return( 
+                <TouchableOpacity>
+
+                    <ListItem bottomDivider>
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.title}><MaterialCommunityIcons name="tablet-cellphone" size={15} color="gray" /> {item.name}</ListItem.Title>
+                                <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {item.total_price}</ListItem.Subtitle>
+                                <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="account-cash-outline" size={15} color="gray" /> {item.balance}</ListItem.Subtitle>
+                            </ListItem.Content>
+
+                            <ListItem.Content>
+                                <ListItem.Title style={styles.title}><FontAwesome5 name="user" size={15} color="gray" /> {item.customer_name}</ListItem.Title>
+                                <ListItem.Subtitle style={{marginTop:10}}><FontAwesome5 name="mobile-alt" size={15} color="gray" />  {item.customer_contact}</ListItem.Subtitle>
+                                <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="calendar-blank" size={15} color="gray" /> {cur_date}</ListItem.Subtitle>
+                            </ListItem.Content>
+
+                            {ButtonStatus}
+                
+
+                        <ListItem.Chevron />
+                    </ListItem>
+
+
+                </TouchableOpacity>
+            )
+            }}
+            keyExtractor={(item, index) => index.toString()}
+           />
+
+        </View>
 
         )
 }
