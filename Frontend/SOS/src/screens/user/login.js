@@ -2,7 +2,7 @@ import React, {useState, navigation, useContext} from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button, Text } from 'react-native-elements';
-import { SendOTP, VerifyOTP } from '../../services/api/users/userapi'
+import { SendOTP, VerifyOTP, GetToken } from '../../services/api/users/userapi'
 import {Authcontext} from '../../components/context'
 
 
@@ -28,13 +28,13 @@ export const Login = ({ navigation }) => {
             setContactErr('');
             //var res = 'otp sent';
             var res = await SendOTP(contact);
-            //alert("LOGIN PAGE :"+res)
+            
             if(res == 'otp sent'){
                 FinalContact = contact;
                 navigation.navigate('EnterOtp');
             }
             else
-                alert("Error : "+ res)
+                alert("Server Error : "+ res)
         }
     }
 
@@ -97,14 +97,11 @@ export const EnterOtp = ({navigation}) => {
             
 
             var res = await VerifyOTP(FinalContact, otp);
+            //console.log("Otp Verify REs : ",res);
+            
             if(res == 'old_user'){
-                SignIn('123456');
-                // navigation.reset({
-                //     index:0,
-                //     routes:[
-                //         {name:'User_Dashboard', params:{cont:FinalContact}}
-                //     ],
-                // })
+                SignIn();
+                //navigation.reset({index:0, routes:[{name:'User_Dashboard', params:{cont:FinalContact}}]})
             }
             else if(res == 'new_user'){
                 navigation.reset({

@@ -1,5 +1,5 @@
 import React,{useState, useEffect, navigation, useMemo, useContext, useReducer} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import { NavigationContainer} from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -9,13 +9,20 @@ import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from '@react
 import AsyncStorage from '@react-native-community/async-storage';
 import {useTheme, Avatar, Title, Caption, Paragraph, Drawer, Text, TouchableRipple, Switch} from 'react-native-paper'
 
+import {GetLoggedInUserDetails, StoreToken, VerifyToken} from '../../services/api/users/userapi'
+
 import {EnterOtp, Login} from '../../screens/user/login'
 import Register_User from '../../screens/user/user_registration'
 import {UserDashboard} from '../../screens/user/dashboard'
 import {UserProfile} from '../../screens/user/user_profile'
-import {CreateBill} from '../../screens/user/create_bill'
+import {SelectCustomerForBill, SelectProductForBill, CreateBill} from '../../screens/user/create_bill'
 import {CreateCustomer} from '../../screens/user/create_customer'
 import {CreateProduct} from '../../screens/user/create_product'
+import {UserViewCustomer} from '../../screens/user/view_user_customer'
+import {UserViewProduct} from '../../screens/user/view_user_product'
+import {UserViewPayment} from '../../screens/user/view_user_bill'
+import {UserSpecficEmiDetails} from '../../screens/user/view_emi_product'
+
 import {SplashScreen} from '../../screens/splash/splash'
 import {Authcontext} from '../../components/context'
 
@@ -33,8 +40,19 @@ const AuthStackScreen = () => {
         </NavigationContainer>
     )
 }
-
 const UserDashboardScreen = ({navigation}) => {
+
+    var user_name =<View style={{paddingLeft:40, paddingTop:10}}><ActivityIndicator size="small" color="gray"/></View>;
+    var shop_name;
+    LoggedDetails();
+
+    async function LoggedDetails() {
+        await GetLoggedInUserDetails();
+        user_name = await (await AsyncStorage.getItem('userName')).split('"')[1];
+        shop_name = await (await AsyncStorage.getItem('userShop')).split('"')[1];
+    }
+
+    
     const { SignOut } = useContext(Authcontext)
     
     const Tabs = createBottomTabNavigator();
@@ -44,7 +62,7 @@ const UserDashboardScreen = ({navigation}) => {
     const ProfileStack = createStackNavigator();
 
 
-    const HomeStachScreen = (props) =>{
+    const HomeStackScreen = (props) =>{
         return(
             <HomeStack.Navigator>
                 <HomeStack.Screen name='UserDashboard' component={UserDashboard}
@@ -57,7 +75,7 @@ const UserDashboardScreen = ({navigation}) => {
         )
     }
 
-    const ProfileStachScreen = (props) =>{
+    const ProfileStackScreen = (props) =>{
         return(
             <ProfileStack.Navigator>
                 <ProfileStack.Screen name='UserProfile' component={UserProfile} 
@@ -70,40 +88,72 @@ const UserDashboardScreen = ({navigation}) => {
         )
     }
 
-    const BillStachScreen = (props) =>{
+    const BillStackScreen = (props) =>{
         return(
-            <ProfileStack.Navigator>
-                <ProfileStack.Screen name='CreateBill' component={CreateBill} 
-                options={{
-                    headerTitle: 'Create Bill',
-                    headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                    headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserDashboard') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                }}
+            <ProfileStack.Navigator /* initialRouteName='UserViewPayment' */ initialRouteName='UserSpecficEmiDetails' >
+                
+                <ProfileStack.Screen name='UserViewPayment' component={UserViewPayment} 
+                    options={{
+                        headerTitle: 'Payment Record',
+                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserDashboard') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    }}
                 />
+          
+                <ProfileStack.Screen name='SelectProductForBill' component={SelectProductForBill} 
+                    options={{
+                        headerTitle: 'Selct Product',
+                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserViewPayment') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    }}
+                />
+                <ProfileStack.Screen name='SelectCustomerForBill' component={SelectCustomerForBill} 
+                    options={{
+                        headerTitle: 'Select Customer',
+                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('SelectProductForBill') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    }}
+                />
+                <ProfileStack.Screen name='CreateBill' component={CreateBill} 
+                    options={{
+                        headerTitle: 'Create Bill',
+                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('SelectCustomerForBill') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    }}
+                />
+                
+                <ProfileStack.Screen name='UserSpecficEmiDetails' component={UserSpecficEmiDetails} 
+                    options={{
+                        headerTitle: 'Specific Details',
+                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.goBack() } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    }}
+                />
+          
             </ProfileStack.Navigator>
         )
     }
 
-    const ProductStachScreen = (props) =>{
+    const ProductStackScreen = (props) =>{
         return(
             <ProfileStack.Navigator>
                 <ProfileStack.Screen name='CreateProduct' component={CreateProduct} 
                 options={{
                     headerTitle: 'Create Product',
                     headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                    headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserDashboard') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    headerLeft: () => ( <Icon onPress={() => props.navigation.goBack() } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                 }}
                 />
             </ProfileStack.Navigator>
         )
     }
 
-    const CustomerStachScreen = (props) =>{
+    const ViewProductStackScreen = (props) =>{
         return(
             <ProfileStack.Navigator>
-                <ProfileStack.Screen name='CreateCustomer' component={CreateCustomer} 
+                <ProfileStack.Screen name='ViewProduct' component={UserViewProduct} 
                 options={{
-                    headerTitle: 'Create Customer',
+                    headerTitle: 'View Products',
                     headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                     headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserDashboard') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                 }}
@@ -111,6 +161,37 @@ const UserDashboardScreen = ({navigation}) => {
             </ProfileStack.Navigator>
         )
     }
+
+    const CustomerStackScreen = (props) =>{
+        return(
+            <ProfileStack.Navigator>
+                <ProfileStack.Screen name='CreateCustomer' component={CreateCustomer} 
+                options={{
+                    headerTitle: 'Create Customer',
+                    headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    headerLeft: () => ( <Icon onPress={() => props.navigation.goBack() } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                }}
+                />
+            </ProfileStack.Navigator>
+        )
+    }
+
+
+    const ViewCustomerStackScreen = (props) =>{
+        return(
+            <ProfileStack.Navigator>
+                <ProfileStack.Screen name='ViewCustomer' component={UserViewCustomer} 
+                options={{
+                    headerTitle: 'View Customer',
+                    headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserDashboard') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                }}
+                />
+            </ProfileStack.Navigator>
+        )
+    }
+
+    
 
     const TabsScreen = () =>{
         return(
@@ -134,8 +215,8 @@ const UserDashboardScreen = ({navigation}) => {
                 }}
             
             >
-                <Tabs.Screen name='Home' component={HomeStachScreen} />
-                <Tabs.Screen name='Profile' component={ProfileStachScreen}/>
+                <Tabs.Screen name='Home' component={HomeStackScreen} />
+                <Tabs.Screen name='Profile' component={ProfileStackScreen}/>
             </Tabs.Navigator>
         )
     }
@@ -149,18 +230,16 @@ const UserDashboardScreen = ({navigation}) => {
                         <View style={styles.userInfoSection}>
                             <View style={{flexDirection:'row', marginTop:15}}>
                                 <Avatar.Image 
-                                    source={{
-                                        uri:'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg'
-                                    }}
+                                    source={{ uri:'https://serviceonway.com/serviceonway/files/images/user1.png'}}
                                     size={60}
                                 />
                                 <View style={{marginLeft:10}}>
-                                    <Title style={styles.title}>Nidhi Singh</Title>
-                                    <Caption style={styles.caption}>NidhiSingh@gmail.com</Caption>
+                                    <Title style={styles.title}>{user_name}</Title>
+                                    <Caption style={styles.caption}>{shop_name}</Caption>
                                 </View>
                             </View>
 
-                            <View style={styles.row}>
+                            {/* <View style={styles.row}>
                                 <View style={styles.section}>
                                     <Paragraph style={[styles.paragraph, styles.caption]}>5</Paragraph>
                                     <Caption style={styles.caption}>Customer</Caption>
@@ -169,7 +248,7 @@ const UserDashboardScreen = ({navigation}) => {
                                 <Paragraph style={[styles.paragraph, styles.caption]}>10</Paragraph>
                                     <Caption style={styles.caption}>Product</Caption>
                                 </View>
-                            </View>
+                            </View> */}
                         </View> 
 
                         {/************************** User Info Close **************************/}
@@ -188,7 +267,7 @@ const UserDashboardScreen = ({navigation}) => {
                             />
 
                             <DrawerItem
-                                label='Create Bill'
+                                label='Payment'
                                 icon={({focused, color, size}) => (
                                     <FontAwesome5 
                                         name='receipt'
@@ -199,7 +278,7 @@ const UserDashboardScreen = ({navigation}) => {
                                 onPress={()=>{props.navigation.navigate('CreateBill')}}
                             />
 
-                            <DrawerItem
+                            {/* <DrawerItem
                                 label='Create Product'
                                 icon={({focused, color, size}) => (
                                     <FontAwesome5 
@@ -209,9 +288,21 @@ const UserDashboardScreen = ({navigation}) => {
                                     />
                                 )}
                                 onPress={()=>{props.navigation.navigate('CreateProduct')}}
-                            />
+                            /> */}
 
                             <DrawerItem
+                                label='Product'
+                                icon={({focused, color, size}) => (
+                                    <FontAwesome5 
+                                        name='mobile-alt'
+                                        color={color}
+                                        size={size}
+                                    />
+                                )}
+                                onPress={()=>{props.navigation.navigate('ViewProduct')}}
+                            />
+
+                            {/* <DrawerItem
                                 label='Create Customer'
                                 icon={({focused, color, size}) => (
                                     <FontAwesome5 
@@ -221,6 +312,18 @@ const UserDashboardScreen = ({navigation}) => {
                                     />
                                 )}
                                 onPress={()=>{props.navigation.navigate('CreateCustomer')}}
+                            /> */}
+
+                            <DrawerItem
+                                label='Customer'
+                                icon={({focused, color, size}) => (
+                                    <FontAwesome5 
+                                        name='user-plus'
+                                        color={color}
+                                        size={size}
+                                    />
+                                )}
+                                onPress={()=>{props.navigation.navigate('ViewCustomer')}}
                             />
 
                         </Drawer.Section>
@@ -251,10 +354,13 @@ const UserDashboardScreen = ({navigation}) => {
     return(
         <NavigationContainer>
              <Drawers.Navigator drawerContent={props => <CustomDrawerNavigator {...props} />}>
-                 <Drawers.Screen name='UserDashboard' component={TabsScreen}/>
-                 <Drawers.Screen name='CreateBill' component={BillStachScreen}/>
-                 <Drawers.Screen name='CreateProduct' component={ProductStachScreen}/>
-                <Drawers.Screen name='CreateCustomer' component={CustomerStachScreen}/>
+                <Drawers.Screen name='UserDashboard' component={TabsScreen}/>
+                <Drawers.Screen name='CreateBill' component={BillStackScreen}/>
+                <Drawers.Screen name='CreateProduct' component={ProductStackScreen}/>
+                <Drawers.Screen name='ViewProduct' component={ViewProductStackScreen}/>
+                <Drawers.Screen name='CreateCustomer' component={CustomerStackScreen}/>
+                <Drawers.Screen name='ViewCustomer' component={ViewCustomerStackScreen}/>
+
             </Drawers.Navigator>
         </NavigationContainer>
 
@@ -274,7 +380,7 @@ const UserDashboardScreen = ({navigation}) => {
                             />
                         }} 
                     />
-                    <Drawers.Screen name='Create_Bill' component={BillStachScreen} 
+                    <Drawers.Screen name='Create_Bill' component={BillStackScreen} 
                         options={{
                             title:'Create Bill',
                             drawerIcon:({focused}) => <FontAwesome5 
@@ -284,7 +390,7 @@ const UserDashboardScreen = ({navigation}) => {
                             />
                         }} 
                     />
-                    <Drawers.Screen name='Create_Product' component={ProductStachScreen} 
+                    <Drawers.Screen name='Create_Product' component={ProductStackScreen} 
                         options={{
                             title:'Create Product',
                             drawerIcon:({focused}) => <FontAwesome5 
@@ -294,7 +400,7 @@ const UserDashboardScreen = ({navigation}) => {
                             />
                         }} 
                     />
-                    <Drawers.Screen name='Create_Customer' component={CustomerStachScreen}  
+                    <Drawers.Screen name='Create_Customer' component={CustomerStackScreen}  
                         options={{
                             title:'Create Customer',
                             drawerIcon:({focused}) => <FontAwesome5 
@@ -364,32 +470,22 @@ export const CustomeHeader = () =>{
     const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
 
     const authContext = useMemo(() => ({
-        SignIn : async(userToken) =>{
-            if(userToken == '123456'){
-                try {
-                    await AsyncStorage.setItem('userToken', userToken)
-                } catch (e) {
-                    console.log('SignIn UseMemo Error ', e);
-                }
+        SignIn : async() =>{
+            var tokres = await StoreToken();
+            if(tokres == 'stored'){
+                const userToken = await AsyncStorage.getItem('userToken')
                 dispatch({type:'LOGIN', token:userToken});
-            }
-            else
+            }else
                 dispatch({type:'LOGIN'});
-            
-            
         },
 
-        SignUp : async(userToken) =>{
-            if(userToken == '123456'){
-                try {
-                    await AsyncStorage.setItem('userToken', userToken)
-                } catch (e) {
-                    console.log('SignIn UseMemo Error ', e);
-                }
+        SignUp : async() =>{
+            var tokres = await StoreToken();
+            if(tokres == 'stored'){
+                const userToken = await AsyncStorage.getItem('userToken')
                 dispatch({type:'REGISTER', token:userToken});
-            }
-            else
-            dispatch({type:'REGISTER'});
+            }else
+                dispatch({type:'REGISTER'});
             
         },
 
@@ -405,16 +501,18 @@ export const CustomeHeader = () =>{
 
     useEffect(() => {
         setTimeout( async()=>{
-
             let userToken;
             try {
-                userToken = await AsyncStorage.getItem('userToken')
+                userToken = await AsyncStorage.getItem('userToken');
               } catch (e) {
                 console.log('SignIn UseMemo Error ', e);
               }
 
-            dispatch({type:'REGISTER', token:userToken});
-            //setIsLoading(false);
+            var tokres = await VerifyToken(userToken);
+            if(tokres == 'authorized')
+                dispatch({type:'REGISTER', token:userToken});
+            else
+                dispatch({type:'REGISTER'});
         },100)
     },[])
 

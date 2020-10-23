@@ -2,7 +2,7 @@ import React, {useState, navigation, useContext} from 'react';
 import { StyleSheet, ScrollView, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button, Text } from 'react-native-elements';
-import { CreateUSer } from '../../services/api/users/userapi'
+import { CreateUser } from '../../services/api/users/userapi'
 import {Authcontext} from '../../components/context'
 
 const Register_User = ({navigation, route}) => {
@@ -75,8 +75,10 @@ const Register_User = ({navigation, route}) => {
         }
 
         else {
-            var response = await CreateUSer(user, contact, shop, address);
-            if(response == 'error')
+            var response = await CreateUser(user, contact, shop, address);
+            //alert("Message Is : "+response)
+            
+            if(response != 'success')
                 alert('Server Error')
             
             else{
@@ -93,7 +95,7 @@ const Register_User = ({navigation, route}) => {
                 setAddressErrStyle(false);
                 setAddressErr('');
 
-                SignUp('123456');
+                SignUp();
                 
                 // navigation.reset({
                 //     index:0,

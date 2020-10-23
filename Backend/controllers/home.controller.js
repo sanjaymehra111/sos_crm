@@ -34,10 +34,7 @@ exports.create_user = (req, res) => {
 
 
 
-  exports.create_new_product = (req, res) => {
-
-    //console.log("cont : ",req.body);
-
+  exports.get_user_details = (req, res, auth) => {
     // Validate request
     if (!req.body) {
       res.status(400).send({
@@ -46,7 +43,154 @@ exports.create_user = (req, res) => {
     }
 
     // Save Customer in the database
-    User.create_new_product('1', req.body.product_name, req.body.product_price, req.body.product_emi, (err, data) => {
+    User.get_user_details(auth.USER_ID, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+        //console.log("RES CONT : ", data)
+        res.send(data);
+      }
+    });
+  };
+
+
+  exports.get_product_details = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.get_product_details(auth.USER_ID, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+        //console.log("RES CONT : ", data)
+        res.send(data);
+      }
+    });
+  };
+
+
+  exports.get_customer_details = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.get_customer_details(auth.USER_ID, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+        //console.log("RES CONT : ", data)
+        res.send(data);
+      }
+    });
+  };
+
+
+  exports.get_bill_details = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.get_bill_details(auth.USER_ID, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+        //console.log("RES CONT : ", data)
+        res.send(data);
+      }
+    });
+  };
+
+
+  exports.get_emi_bill_details_via_bill_id = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.get_emi_bill_details_via_bill_id(auth.USER_ID, req.body.bid, (err, emidata) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+            User.get_bill_details_via_bill_id(auth.USER_ID, req.body.bid, (err, billdata) => {
+              if (err)
+                res.status(500).send({
+                  message:
+                    err.message || "Some error occurred while creating the Customer."
+                });
+              else {
+                res.send([emidata,billdata]);
+              }
+            });
+      }
+    });
+  };
+
+
+  exports.create_new_product = (req, res, auth) => {
+    //console.log("cont : ",req.body);
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.create_new_product(auth.USER_ID, req.body.product_name, req.body.product_price, req.body.product_emi, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+        //console.log("RES CONT : ", data.res.insertId)
+        res.send(data);
+      }
+    });
+  };
+
+
+  exports.create_new_customer = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.create_new_customer(auth.USER_ID, req.body.name, req.body.contact, req.body.email, req.body.address, req.body.aadhar, (err, data) => {
       if (err)
         res.status(500).send({
           message:
@@ -61,8 +205,109 @@ exports.create_user = (req, res) => {
 
 
 
+  exports.create_new_bill = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.create_new_bill(auth.USER_ID, req, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+            // Save Customer in the database
+            User.create_new_payment(auth.USER_ID, data.res.insertId, req.body.pay, req.body.pay, req.body.balance, (err, data) => {
+              if (err)
+                res.status(500).send({
+                  message:
+                    err.message || "Some error occurred while creating the Customer."
+                });
+              else {
+                      res.send(data);
+              }
+            });
+      }
+    });
+  };
+
+
+  exports.create_new_emi_bill = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.create_new_bill(auth.USER_ID, req, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+            // Save Customer in the database
+            User.create_new_emi_bill(auth.USER_ID, req, data.res.insertId, (err, data) => {
+              if (err)
+                res.status(500).send({
+                  message:
+                    err.message || "Some error occurred while creating the Customer."
+                });
+              else {
+                      res.send(data);
+              }
+            });
+      }
+    });
+  };
+
+
+
+  exports.create_new_payment = (req, res, auth) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.create_new_payment(auth.USER_ID, req.body.bill_id, req.body.pay, req.body.total_pay, req.body.balance, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+          User.update_bill_details(auth.USER_ID, req.body.bill_id, req.body.total_pay, req.body.balance, (err, data) => {
+            if (err)
+              res.status(500).send({
+                message:
+                  err.message || "Some error occurred while creating the Customer."
+              });
+            else {
+              //console.log("RES CONT : ", data.res)
+              res.send(data);
+            }
+          });
+      }
+    });
+  };
+
+
   exports.send_otp = (req, res) => {
     // Validate request
+    //console.log("BODY : ",req.body)
+
+    //console.log("ontroller Sent otp: ",req.body);
+
     if (!req.body) {
       res.status(400).send({
         message: "Content can not be empty!"
@@ -93,7 +338,6 @@ exports.create_user = (req, res) => {
 
 
   exports.verify_otp = (req, res) => {
-
     // Validate request
     if (!req.body) {
       res.status(400).send({
@@ -125,11 +369,13 @@ exports.create_user = (req, res) => {
                   err.message || "Some error occurred while Verify OTP."
               });
             else {
-              //console.log("Controller Data : " + data);
-              if(data == 'valid')
-                res.send('old_user')
+
+              //console.log("CONTROLLER OTP VERIFICATION : ", data);
+
+              if(data == 'invalid')
+                res.send({message:'new_user'})
               else
-                res.send('new_user')
+                res.send({message:data})
             }
           });
         }
@@ -169,6 +415,8 @@ exports.create_user = (req, res) => {
     });
   };
 
+
+  
   exports.login = (req, res) => {
 
     // Validate request

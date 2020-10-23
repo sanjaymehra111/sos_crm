@@ -5,11 +5,9 @@ import { Text, Avatar } from 'react-native-elements';
 export const SplashScreen = () => {
     return(
             <View style={styles.LoginView}>
-
                 <Text style={{textTransform:'capitalize', fontSize:20}}>
-                <ActivityIndicator size="large" color="white" />
+                    <ActivityIndicator size="large" color="white" />
                 </Text>
-                
             </View>
     )
 }

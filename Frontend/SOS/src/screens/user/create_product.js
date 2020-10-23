@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Input, Button, Text } from 'react-native-elements';
 import { CreateNewProduct } from '../../services/api/users/userapi'
 
-export const CreateProduct = () => {
+export const CreateProduct = (props) => {
 
     const [name, setName] = useState('');
     const [nameErr, setNameErr] = useState('');
@@ -22,7 +22,7 @@ export const CreateProduct = () => {
     
 
     const [emi, setEmi] = useState('');
-    const [emiErr, setEmipErr] = useState('');
+    const [emiErr, setEmiErr] = useState('');
     const [emiFocus, setEmiFocus] = useState(false);
     const [emiErrStyle, setEmiErrStyle] = useState(false);
     const emiinput = React.createRef();
@@ -48,6 +48,7 @@ export const CreateProduct = () => {
 
         else {
             var response = await CreateNewProduct(name, price, emi);
+            //console.log('response : ', response)
              if(response == 'error')
                  alert('Server Error')
             else{
@@ -60,6 +61,9 @@ export const CreateProduct = () => {
                 setPriceErrStyle(false);
 
                 setEmi('')
+
+                props.navigation.goBack();
+                //props.navigation.navigate('ViewProduct')
             }
             
         }
