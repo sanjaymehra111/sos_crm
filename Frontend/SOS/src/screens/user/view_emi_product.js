@@ -32,37 +32,45 @@ export const UserSpecficEmiDetails = (props) => {
 <FlatList
             data={BillDetails}
             renderItem={({item})=>{
-                var ButtonStatus =  <Button title='' buttonStyle={{padding:0, backgroundColor:'white'}} icon={<MaterialCommunityIcons name="check-decagram" size={25} color="green" />} ></Button>;
                 var cur_date = FormatDate(item.date);
-                if(item.status == '0'){
-                    ButtonStatus = <Button title='' buttonStyle={{padding:0, backgroundColor:'white'}} icon={<MaterialCommunityIcons name="close-octagon" size={25} color="red" />} ></Button>
-                }
-
-                
                 return( 
-                <TouchableOpacity>
+                <View>
 
                     <ListItem bottomDivider>
-                            <ListItem.Content>
-                                <ListItem.Title style={styles.title}><MaterialCommunityIcons name="tablet-cellphone" size={15} color="gray" /> {item.name}</ListItem.Title>
-                                <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {item.total_price}</ListItem.Subtitle>
-                                <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="account-cash-outline" size={15} color="gray" /> {item.balance}</ListItem.Subtitle>
-                            </ListItem.Content>
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.title}><Text>Product Details</Text> </ListItem.Title>
+                            <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="tablet-cellphone" size={15} color="gray" /> {item.name}</ListItem.Subtitle>
+                            <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {item.total_price}</ListItem.Subtitle>
+                            <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="account-cash-outline" size={15} color="gray" /> {item.balance}</ListItem.Subtitle>
+                        </ListItem.Content>
 
-                            <ListItem.Content>
-                                <ListItem.Title style={styles.title}><FontAwesome5 name="user" size={15} color="gray" /> {item.customer_name}</ListItem.Title>
-                                <ListItem.Subtitle style={{marginTop:10}}><FontAwesome5 name="mobile-alt" size={15} color="gray" />  {item.customer_contact}</ListItem.Subtitle>
-                                <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="calendar-blank" size={15} color="gray" /> {cur_date}</ListItem.Subtitle>
-                            </ListItem.Content>
-
-                            {ButtonStatus}
-                
-
-                        <ListItem.Chevron />
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.title}><Text>User Details</Text></ListItem.Title>
+                            <ListItem.Subtitle style={{marginTop:10}}><FontAwesome5 name="user" size={15} color="gray" /> {item.customer_name}</ListItem.Subtitle>
+                            <ListItem.Subtitle style={{marginTop:10}}><FontAwesome5 name="mobile-alt" size={15} color="gray" />  {item.customer_contact}</ListItem.Subtitle>
+                            <ListItem.Subtitle style={{marginTop:10}}><MaterialCommunityIcons name="calendar-blank" size={15} color="gray" /> {cur_date}</ListItem.Subtitle>
+                        </ListItem.Content>
                     </ListItem>
 
 
-                </TouchableOpacity>
+
+                    <ListItem bottomDivider>
+                        <ListItem.Content style={{alignItems:'center'}}>
+                            <ListItem.Title style={styles.title}><Text>emi details</Text></ListItem.Title>
+                            <View style={{padding:10}} />
+                            <View style={{flexDirection:'row'}}>
+                                <Text><MaterialCommunityIcons name="calendar-month" size={15} color="gray" />  6 {item.customer_name}</Text>
+                                <Text style={{padding:20}} />
+                                <Text><MaterialCommunityIcons name="percent-outline" size={15} color="gray" />  3 {item.customer_name}</Text>
+                                <Text style={{padding:20}} />
+                                <Text><MaterialCommunityIcons name="percent-outline" size={15} color="gray" />  3 {item.customer_name}</Text>
+                            </View>
+                        </ListItem.Content>
+                    </ListItem>
+
+
+                    
+                </View>
             )
             }}
             keyExtractor={(item, index) => index.toString()}
@@ -81,7 +89,10 @@ const styles = StyleSheet.create({
     },
     title: {
         marginTop: 3,
-        textTransform:"capitalize"
+        textTransform:"capitalize",
+        borderColor:'red',
+        borderBottomWidth:1,
+        paddingBottom:5,
     }, 
     AddButtonView :{
         position:"absolute",
