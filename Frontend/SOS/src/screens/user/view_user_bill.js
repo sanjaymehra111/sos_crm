@@ -28,13 +28,15 @@ export const UserViewPayment = (props) => {
     };
 
     useEffect(()=>{
-        getfuncion();    
+        getfuncion();
+        setInterval(()=>{
+            getfuncion();
+        },5000)
     },[])
     
     
     async function getfuncion(){
         const res = await GetLoggedInUserBillDetails();
-        //console.log("Product : ",res);
         setDetails([...res]);
     }
 
@@ -44,7 +46,8 @@ export const UserViewPayment = (props) => {
             setPartpaymentdisplay('flex')
             setEmiDisplay('none')
         }
-        else if(item.status == '0' && item.pay_type == 'emi'){
+        //else if(item.status == '0' && item.pay_type == 'emi'){
+        else if(item.pay_type == 'emi'){
             setPartpaymentdisplay('none')
             setEmiDisplay('flex')
         }
@@ -84,6 +87,11 @@ export const UserViewPayment = (props) => {
             }
 
         }
+    }
+
+    function ShowEmiDetailsFunction(){
+        toggleOverlay();
+        props.navigation.navigate('UserSpecficEmiDetails', {id:paymentdetails[0].id})
     }
 
     return(
@@ -126,7 +134,10 @@ export const UserViewPayment = (props) => {
             }}
             keyExtractor={(item, index) => index.toString()}
            />
-            <Button onPress={()=>{props.navigation.navigate('SelectProductForBill')}} buttonStyle={{backgroundColor:'#2288dc', borderRadius:100,  paddingLeft:50, paddingRight:30, padding:15}} title='Create New' iconRight icon={<Icon name="plus" style={{marginLeft:20}}  size={15} color="white"/>}></Button>
+
+            <View style={styles.AddButtonView}>
+                <MaterialCommunityIcons name="plus" size={20} color="white" style={{padding:25}}  onPress={()=>{props.navigation.navigate('CreateBill')}} />
+            </View>
         <View>
                 <Overlay isVisible={visible} overlayStyle={{borderRadius:10}} onBackdropPress={toggleOverlay}>
                 <View style={{ padding:40}}>
@@ -168,7 +179,7 @@ export const UserViewPayment = (props) => {
                         <View style={{display:EmiDisplay}}>
                             <View style={styles.listStyle}><Text style={{color:'red'}}>BALANCE</Text><Text style={{color:'red'}}><MaterialCommunityIcons name="currency-inr" size={15} color="red" /> {paymentdetails[0].balance}</Text></View>
                             <View style={styles.PaymentInput}>
-                                <Button onPress={()=>{props.navigation.navigate('UserSpecficEmiDetails')}} buttonStyle={{marginTop:20, borderRadius:20}} title='EMI DETAILS'/>
+                                <Button onPress={()=>ShowEmiDetailsFunction()} buttonStyle={{marginTop:20, borderRadius:20}} title='EMI DETAILS'/>
                             </View>
                         </View> 
 

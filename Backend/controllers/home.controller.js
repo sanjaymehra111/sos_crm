@@ -15,11 +15,12 @@ exports.create_user = (req, res) => {
       user_name: req.body.user_name,
       contact: req.body.contact,
       shop_name: req.body.shop_name,
-      address: req.body.address
+      address: req.body.address,
+      gst:req.body.gst,
     });
 
     // Save Customer in the database
-    User.create_user(user.user_name, user.contact, user.shop_name, user.address, (err, data) => {
+    User.create_user(user.user_name, user.contact, user.shop_name, user.address, user.gst, (err, data) => {
       if (err)
         res.status(500).send({
           message:
@@ -149,7 +150,16 @@ exports.create_user = (req, res) => {
                     err.message || "Some error occurred while creating the Customer."
                 });
               else {
-                res.send([emidata,billdata]);
+                  User.get_emi_payment_details_via_bill_id(auth.USER_ID, req.body.bid, (err, emipayment) => {
+                    if (err)
+                      res.status(500).send({
+                        message:
+                          err.message || "Some error occurred while creating the Customer."
+                      });
+                    else {
+                      res.send([emidata,billdata,emipayment]);
+                    }
+                  });
               }
             });
       }
@@ -280,6 +290,42 @@ exports.create_user = (req, res) => {
 
     // Save Customer in the database
     User.create_new_payment(auth.USER_ID, req.body.bill_id, req.body.pay, req.body.total_pay, req.body.balance, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+      else {
+          User.update_bill_details(auth.USER_ID, req.body.bill_id, req.body.total_pay, req.body.balance, (err, data) => {
+            if (err)
+              res.status(500).send({
+                message:
+                  err.message || "Some error occurred while creating the Customer."
+              });
+            else {
+              //console.log("RES CONT : ", data.res)
+              res.send(data);
+            }
+          });
+      }
+    });
+  };
+
+
+
+
+
+  exports.create_new_emi_payment = (req, res, auth) => {
+    // Validate request
+
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    // Save Customer in the database
+    User.create_new_emi_payment(auth.USER_ID, req.body.bill_id, req.body.customer_id, req.body.pay, req.body.balance, req.body.total_price, req.body.total_pay, req.body.emi_date, (err, data) => {
       if (err)
         res.status(500).send({
           message:

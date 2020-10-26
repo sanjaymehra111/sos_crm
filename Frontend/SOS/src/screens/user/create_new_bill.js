@@ -3,187 +3,113 @@ import {Text, StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import {GetLoggedInUserProductDetails, GetLoggedInUserCustomerDetails, CreateNewBill, CreateNewEmiBill} from '../../services/api/users/userapi'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFocusEffect } from '@react-navigation/native';
-import { ListItem, Avatar, SearchBar, ButtonGroup, Overlay, Button, Input} from 'react-native-elements';
+import { ListItem, Avatar, SearchBar, ButtonGroup, Overlay, Button, Input, CheckBox} from 'react-native-elements';
 import { color } from 'react-native-reanimated';
 import RNPickerSelect from 'react-native-picker-select';
 
-var ProductFinalDetails = {data :[]};
-var CustomerFinalDetails = {data :[]};
+var ProductFinalDetails = {data :[{}]};
+var CustomerFinalDetails = {data :[{}]};
 
 //ProductFinalDetails.data.push({id:'1',name:'redmi',price:'9999',emi:'1123123122312312312312'})
 //CustomerFinalDetails.data.push({id:'1',name:'snj',contact:'9887878767',email:'snj@gmail.com',address:'rajapuri uttam nagar, new dlehi'})
 
-export const SelectProductForBill = (props) => {
-
-    const [productdetails, setProductDetails] =useState([]);
-    const [allproductdetails, setAllProductDetails] =useState([]);
-    const [search, setSearch] =useState('');
-    
-    useEffect(()=>{
-        GetProductFuncion();
-    },[])
-    
-    
-    async function GetProductFuncion(){
-        const res = await GetLoggedInUserProductDetails();
-        //console.log(res);
-        setProductDetails([...res]);
-        setAllProductDetails([...res]);
-    }
-
-    const SearchProductData= (search)=>  {
-        var newData;
-        if(!search){
-            newData = allproductdetails;
-        } else {
-            newData = allproductdetails.filter(item => {
-                const itemData = item.product_name.toUpperCase();
-                const textData = search.toUpperCase();
-                return  itemData.indexOf(textData) > -1
-            });
-        }
-        setProductDetails(newData);
-        setSearch(search);
-    };
-
-    const SelectProduct = (id,name,price,emi) =>{
-        ProductFinalDetails.data=[];
-        ProductFinalDetails.data.push({id,name,price,emi})
-        props.navigation.navigate('SelectCustomerForBill')
-    }
-
-        return (
-            <View style={styles.LoginView}>
-
-            <SearchBar
-                placeholder="Search Product..."
-                onChangeText={(search) => SearchProductData(search)}
-                value={search}
-                containerStyle={{borderColor:'gray', borderWidth:1, padding:0,  borderRadius:50}}
-                inputContainerStyle={{backgroundColor:"white", borderWidth:1,borderColor:'white', borderRadius:50}}
-            />
-
-            <FlatList
-            data={productdetails}
-            renderItem={({item})=>{ return( 
-                <TouchableOpacity>
-
-                    <ListItem bottomDivider onPress={() => SelectProduct(item.id,item.product_name, item.product_price,item.product_emi)}>
-                        <Avatar source={{uri: 'https://serviceonway.com/serviceonway/files/images/update1.png'}} size={60} />
-                        <ListItem.Content style={{marginLeft:20}}>
-                            <ListItem.Title style={styles.title}>{item.product_name}</ListItem.Title>
-                            <ListItem.Subtitle>{item.product_price}</ListItem.Subtitle>
-                            <ListItem.Subtitle>{item.product_emi}</ListItem.Subtitle>
-                            </ListItem.Content>
-                        <ListItem.Chevron />
-                    </ListItem>
-
-                </TouchableOpacity>
-                )
-                }}
-                keyExtractor={(item, index) => index.toString()}
-            />
-
-            <View style={styles.AddButtonView}>
-                <MaterialCommunityIcons name="plus" size={20} color="white" style={{padding:25}}  onPress={()=>{props.navigation.navigate('CreateProduct')}} />
-            </View>
-
-            </View>
-        )  
-    }
-
-
-export const SelectCustomerForBill = (props) =>{
-
-    const [customerdetails, setCustomerDetails] =useState([]);
-    const [allcustomerdetails, setAllCustomerDetails] =useState([]);
-    const [search, setSearch] =useState('');
-    
-    useEffect(()=>{
-        GetCustomerFuncion();
-    },[])
-    
-    async function GetCustomerFuncion(){
-        const res = await GetLoggedInUserCustomerDetails();
-        //console.log(res);
-        setCustomerDetails([...res]);
-        setAllCustomerDetails([...res])
-    }
-
-    const SearchProductData= (search)=>  {
-        var newData;
-        if(!search){
-            newData = allcustomerdetails;
-        } else {
-            newData = allcustomerdetails.filter(item => {
-                const itemData = item.name.toUpperCase();
-                const textData = search.toUpperCase();
-                return  itemData.indexOf(textData) > -1
-            });
-        }
-        setCustomerDetails(newData);
-        setSearch(search);
-    };
-
-    const SelectCustomer = (id,name,contact,email,address) =>{
-        CustomerFinalDetails.data=[];
-        CustomerFinalDetails.data.push({id,name,contact,email,address})
-        props.navigation.navigate('CreateBill')
-    }
-
-        return (
-            <View style={styles.LoginView}>
-
-            <SearchBar
-                placeholder="Search Customer..."
-                onChangeText={(search) => SearchProductData(search)}
-                value={search}
-                containerStyle={{borderColor:'gray', borderWidth:1, padding:0,  borderRadius:50}}
-                inputContainerStyle={{backgroundColor:"white", borderWidth:1,borderColor:'white', borderRadius:50}}
-            />
-
-            <FlatList
-            data={customerdetails}
-            renderItem={({item})=>{ return( 
-                <TouchableOpacity>
-
-                    <ListItem bottomDivider onPress={() => SelectCustomer(item.id, item.name, item.contact, item.email, item.address)}>
-                        <Avatar rounded source={{uri: 'https://serviceonway.com/serviceonway/files/images/user1.png'}} size={80} />
-                        <ListItem.Content style={{marginLeft:20}}>
-                            <ListItem.Title style={styles.title}>{item.name}</ListItem.Title>
-                            <ListItem.Subtitle>{item.contact}</ListItem.Subtitle>
-                            <ListItem.Subtitle>{item.email}</ListItem.Subtitle>
-                            <ListItem.Subtitle style={styles.title}>{item.address}</ListItem.Subtitle>
-                        </ListItem.Content>
-                        <ListItem.Chevron />
-                    </ListItem>
-
-                </TouchableOpacity>
-            )
-            }}
-            keyExtractor={(item, index) => index.toString()}
-            />
-
-            <View style={styles.AddButtonView}>
-                <MaterialCommunityIcons name="plus" size={20} color="white" style={{padding:25}}  onPress={()=>{props.navigation.navigate('CreateCustomer')}} />
-            </View>
-
-
-            </View>
-        )  
-} 
-
-
 export const CreateBill = (props) => {
 
-    const finalPrice = ProductFinalDetails.data[0].price;
-    const firstPrice = Math.round(finalPrice*100/118); //847
-    const gst_cgst = Number((firstPrice*0.09).toFixed(2)); // 152
-    const gst_sgst = Number((firstPrice*0.09).toFixed(2));  // 152
-    const gst_igst ='-';
-    //const GrandTotal = Math.round(firstPrice+gst_cgst+gst_sgst);
-    const GrandTotal = finalPrice;
+
+    //****************************************** Create Customer  ***************************************/
+
+    const [user, setUser] = useState('');
+    const [userErr, setUserErr] = useState('');
+    const [userFocus, setUserFocus] = useState(false);
+    const [userErrStyle, setUserErrStyle] = useState(false);
+    const userinput = React.createRef();
+    
+    const [contact, setContact] = useState('');
+    const [contactErr, setContactErr] = useState('');
+    const [contactFocus, setContactFocus] = useState(false);
+    const [contactErrStyle, setContactErrStyle] = useState(false);
+    const contactinput = React.createRef();
+
+    const [address, setAddress] = useState('');
+    const [addressErr, setAddressErr] = useState('');
+    const [addressFocus, setAddressFocus] = useState(false);
+    const [addressErrStyle, setAddressErrStyle] = useState(false);
+    const addressinput = React.createRef();
+    
+    const [aadhar, setAadhar] = useState('');
+    const [aadharErr, setAadharErr] = useState('');
+    const [aadharFocus, setAadharFocus] = useState(false);
+    const [aadharErrStyle, setAadharErrStyle] = useState(false);
+    const aadharinput = React.createRef();
+
+    const [pan, setPan] = useState('');
+    const [panErr, setPanErr] = useState('');
+    const [panFocus, setPanFocus] = useState(false);
+    const [panErrStyle, setPanErrStyle] = useState(false);
+    const paninput = React.createRef();
+
+    
+    
+    
+    //****************************************** Create Product  ***************************************/
+
+    const [name, setName] = useState('');
+    const [nameErr, setNameErr] = useState('');
+    const [nameFocus, setNameFocus] = useState(false);
+    const [nameErrStyle, setNameErrStyle] = useState(false);
+    const nameinput = React.createRef();
+
+
+    const [price, setPrice] = useState('');
+    const [priceErr, setPriceErr] = useState('');
+    const [priceFocus, setPriceFocus] = useState(false);
+    const [priceErrStyle, setPriceErrStyle] = useState(false);
+    const priceinput = React.createRef();
+    
+
+    const [emi, setEmi] = useState('');
+    const [emiErr, setEmiErr] = useState('');
+    const [emiFocus, setEmiFocus] = useState(false);
+    const [emiErrStyle, setEmiErrStyle] = useState(false);
+    const emiinput = React.createRef();
+
+    const [gstcheck, setGstcheck] = useState(false);
+    const [gstcheckErr, setGstcheckErr] = useState('');
+    const [gstcheckFocus, setGstcheckFocus] = useState(false);
+    const [gstcheckErrStyle, setGstcheckErrStyle] = useState(false);
+    const gstcheckinput = React.createRef();
+
+    const [finalPrice, setFinalPrice] = useState(false);
+    const [firstPrice, setFirstPrice] = useState(false);
+    const [gst_cgst, setGst_cgst] = useState(false);
+    const [gst_sgst, setGst_sgst] = useState(false);
+    const [gst_igst, setGst_igst] = useState(false);
+    const [GrandTotal, setGrandTotal] = useState(false);
+
+
+    useEffect(()=>{
+        if(price > 0)
+            ShowPayDetails();
+    },[price, gstcheck])
+
+    function ShowPayDetails(){
+        setFirstPrice(price); //847
+        setGst_cgst('-'); // 152
+        setGst_sgst('-');  // 152
+        setGst_igst('-');
+
+        if(gstcheck == true){
+            var fp = Math.round(price*100/118);
+            setFirstPrice(fp); //847
+            setGst_cgst(Number((fp*0.09).toFixed(2))); // 152
+            setGst_sgst(Number((fp*0.09).toFixed(2)));  // 152
+            setGst_igst('-');
+        }
+        //const GrandTotal = Math.round(firstPrice+gst_cgst+gst_sgst);
+        setGrandTotal(price);
+    }
 
     const [Emipaidamount, setEmipaidamount] = useState('');
     const [Emibalanceamount, setEmibalanceamount] = useState('');
@@ -252,18 +178,21 @@ export const CreateBill = (props) => {
         setEmiVisible(!emivisible);
     };
 
-    const PaymentFunciton = (item) =>{
-        if(item == 0){
-            setPaymentType('full');
-            toggleOverlay();
-            setPartpaymentdisplay('none');
-        }else if(item == 1){
-            setPaymentType('part');
-            toggleOverlay();
-            setPartpaymentdisplay('flex');
-        } else{
-            setPaymentType('emi');
-            toggleEmiOverlay();
+    const PaymentFunciton = async (item) =>{
+        var check = await CheckUserData();
+        if(check == 'success'){
+            if(item == 0){
+                setPaymentType('full');
+                toggleOverlay();
+                setPartpaymentdisplay('none');
+            }else if(item == 2){
+                setPaymentType('part');
+                toggleOverlay();
+                setPartpaymentdisplay('flex');
+            } else{
+                setPaymentType('emi');
+                toggleEmiOverlay();
+            }
         }
     }
 
@@ -348,33 +277,230 @@ export const CreateBill = (props) => {
         }
     }
 
+    function CheckUserData(){
+        if(user == ''){
+            setUserErr('please enter user name');
+            setUserErrStyle(true);
+            userinput.current.shake();
+            userinput.current.focus();
+        }
+
+        else if(contact.length != 10){
+            setUserErr('');
+            setUserErrStyle(false);
+
+            setContactErr('enter a valid contact number');
+            setContactErrStyle(true);
+            contactinput.current.shake();
+            contactinput.current.focus();
+        }
+
+        else if(address == ''){
+            setContactErrStyle(false);
+            setContactErr('');
+
+            setAddressErr('please enter user address');
+            setAddressErrStyle(true);
+            addressinput.current.shake();
+            addressinput.current.focus();
+        }
+
+        else if(name == ''){
+
+            setUserErrStyle(false);
+            setUserErr('');
+
+            setContactErrStyle(false);
+            setContactErr('');
+            
+            setAddressErrStyle(false);
+            setAddressErr('');
+
+            setAadharErrStyle(false);
+            setAadharErr('');
+
+            setPanErrStyle(false);
+            setPanErr('');
+
+            setNameErr('please enter product name');
+            setNameErrStyle(true);
+            nameinput.current.shake();
+            nameinput.current.focus();
+        }
+
+        else if(price == ''){
+            setNameErr('');
+            setNameErrStyle(false);
+
+            setPriceErr('please enter price');
+            setPriceErrStyle(true);
+            priceinput.current.shake();
+            priceinput.current.focus();
+        }
+        else{
+
+            setNameErr('');
+            setNameErrStyle(false);
+
+            setPriceErr('');
+            setPriceErrStyle(false);
+
+            return 'success';
+        }
+
+
+    }
+
+    async function GstCheckFunction(){
+        if(gstcheck == true){
+            setGstcheck(false);
+        }
+        else{
+            setGstcheck(true);
+        }
+    }
     return(
         <View style={styles.BillView}>
             <View>
-                <ListItem bottomDivider disabled containerStyle={{backgroundColor:'lightgray'}} >
+                <ListItem bottomDivider disabled  >
                     <ListItem.Content style={{marginLeft:10, alignItems:"center"}}>
-                        <Avatar rounded source={{uri: 'https://serviceonway.com/serviceonway/files/images/update1.png'}} size={40} />
-                        <View style={{height:15}}/>
-                        <ListItem.Title style={styles.title}><MaterialCommunityIcons name="tablet-cellphone" size={15} color="gray" /> {ProductFinalDetails.data[0].name}</ListItem.Title>
-                        <View style={{height:5}}/>
-                        <ListItem.Subtitle><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {ProductFinalDetails.data[0].price}</ListItem.Subtitle>
-                        {/* <ListItem.Subtitle>{ProductFinalDetails.data[0].emi}</ListItem.Subtitle> */}
+                        <Avatar rounded source={{uri: 'https://serviceonway.com/serviceonway/files/images/user1.png'}} size={100} />
+                        <View style={{height:40}}/>
+                        
+                        <Input 
+                            value = {user}
+                            ref={userinput}
+                            onFocus={() => setUserFocus(true)}
+                            inputContainerStyle={[userFocus ? styles.inputFocused : {}, userErrStyle ? styles.inputErr : {}]}
+                            onChangeText = {(user) => setUser(user)}
+                            maxLength={100}
+                            placeholder='User Name*'
+                            leftIcon={ <Icon name='user' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={userErr}
+                            style={{fontSize:15}}
+                        />
+
+
+                        <Input 
+                            value = {contact}
+                            ref={contactinput}
+                            onFocus={() => setContactFocus(true)}
+                            inputContainerStyle={[contactFocus ? styles.inputFocused : {}, contactErrStyle ? styles.inputErr : {}, {marginTop:-10} ]}
+                            onChangeText = {(contact) => setContact(contact)}
+                            maxLength={10}
+                            keyboardType={'number-pad'}
+                            placeholder='User Contact*'
+                            leftIcon={ <Icon name='phone' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={contactErr}
+                            style={{fontSize:15}}
+                        />
+
+                        <Input 
+                            value = {address}
+                            ref={addressinput}
+                            onFocus={() => setAddressFocus(true)}
+                            inputContainerStyle={[addressFocus ? styles.inputFocused : {}, addressErrStyle ? styles.inputErr : {}, {marginTop:-10} ]}
+                            onChangeText = {(address) => setAddress(address)}
+                            placeholder='User Address*'
+                            leftIcon={ <Icon name='map-marker' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={addressErr}
+                            style={{fontSize:15}}
+                        />
+
+                        <Input 
+                            value = {aadhar}
+                            ref={aadharinput}
+                            onFocus={() => setAadharFocus(true)}
+                            inputContainerStyle={[aadharFocus ? styles.inputFocused : {}, aadharErrStyle ? styles.inputErr : {}, {marginTop:-10} ]}
+                            onChangeText = {(aadhar) => setAadhar(aadhar)}
+                            maxLength={12}
+                            keyboardType={'number-pad'}
+                            placeholder='Aadhar Number'
+                            leftIcon={ <Icon name='id-card' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={aadharErr}
+                            style={{fontSize:15}}
+                        />
+
+                         <Input 
+                            value = {pan}
+                            ref={paninput}
+                            onFocus={() => setPanFocus(true)}
+                            inputContainerStyle={[panFocus ? styles.inputFocused : {}, panErrStyle ? styles.inputErr : {}, {marginTop:-10} ]}
+                            onChangeText = {(pan) => setPan(pan)}
+                            maxLength={12}
+                            placeholder='PAN Number'
+                            leftIcon={ <Icon name='vcard-o' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={panErr}
+                            style={{fontSize:15}}
+                        />
+                            
+                    <View style={{height:5}}/>
                     </ListItem.Content>
                     <ListItem.Content style={{marginLeft:10, alignItems:"center"}}>
-                        <Avatar rounded source={{uri: 'https://serviceonway.com/serviceonway/files/images/user1.png'}} size={40} />
-                        <View style={{height:15}}/>
-                        <ListItem.Title style={styles.title}><FontAwesome5 name="user" size={15} color="gray" /> {CustomerFinalDetails.data[0].name}</ListItem.Title>
-                        <View style={{height:5}}/>
-                        <ListItem.Subtitle><FontAwesome5 name="mobile-alt" size={15} color="gray" /> {CustomerFinalDetails.data[0].contact}</ListItem.Subtitle>
-                        {/* <ListItem.Subtitle>{CustomerFinalDetails.data[0].email}</ListItem.Subtitle>
-                        <ListItem.Subtitle style={styles.title}>{CustomerFinalDetails.data[0].address}</ListItem.Subtitle> */}
+                        <Avatar containerStyle={{marginTop:-20}} rounded source={{uri: 'https://www.tourdemelon.com/wp-content/plugins/maxbuttons/images/gopro/icons/responsive.png'}} size={100} />
+                        <View style={{height:40}}/>
+
+                        <Input 
+                            value = {name}
+                            ref={nameinput}
+                            onFocus={() => setNameFocus(true)}
+                            inputContainerStyle={[nameFocus ? styles.inputFocused : {}, nameErrStyle ? styles.inputErr : {}, {marginTop:-10} ]}
+                            onChangeText = {(name) => setName(name)}
+                            maxLength={100}
+                            placeholder='Product Name*'
+                            leftIcon={ <MaterialCommunityIcons name='devices' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={nameErr}
+                            style={{fontSize:15}}
+                        />
+
+
+                        <Input 
+                            value = {price}
+                            ref={priceinput}
+                            onFocus={() => setPriceFocus(true)}
+                            inputContainerStyle={[priceFocus ? styles.inputFocused : {}, priceErrStyle ? styles.inputErr : {}, {marginTop:-10} ]}
+                            onChangeText = {(price) => setPrice(price)}
+                            maxLength={10}
+                            keyboardType='number-pad'
+                            placeholder='Product Price*'
+                            leftIcon={ <MaterialCommunityIcons name='currency-inr' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={priceErr}
+                            style={{fontSize:15}}
+                        />
+
+                        <Input 
+                            value = {emi}
+                            ref={emiinput}
+                            onFocus={() => setEmiFocus(true)}
+                            inputContainerStyle={[emiFocus ? styles.inputFocused : {}, emiErrStyle ? styles.inputErr : {}, {marginTop:-10} ]}
+                            onChangeText = {(emi) => setEmi(emi)}
+                            maxLength={100}
+                            placeholder='Product EMI Number'
+                            leftIcon={ <MaterialCommunityIcons name='alpha-e-box-outline' size={17} color='gray'/>}
+                            errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                            errorMessage={emiErr}
+                            style={{fontSize:15}}
+                        />
+
+                        <CheckBox uncheckedColor="lightgray" title='INCLUDE GST' checkedColor="green" containerStyle={{marginTop:0}} checked={gstcheck} value={gstcheck} onPress={()=> GstCheckFunction()} />
+
+                        <Input disabled inputContainerStyle={[emiFocus ? styles.inputFocused : {}, emiErrStyle ? styles.inputErr : {}, {marginTop:-10, borderBottomWidth:0} ]} />
+
+                      
+                    <View style={{height:5}}/>
                     </ListItem.Content>
-                    <ListItem.Chevron />
                 </ListItem>
 
-                <View style={{height:50}}/>
+                <View style={{height:20}}/>
                 
-                <ListItem bottomDivider disabled containerStyle={{backgroundColor:'lightgray'}} >
+                <ListItem bottomDivider disabled >
                     <ListItem.Content style={{marginLeft:10}}>
                         <View style={styles.listStyle}><Text>PRICE</Text><Text><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {firstPrice}</Text></View>
                         <View style={styles.listStyle}><Text>CGST (9%)</Text><Text><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {gst_cgst}</Text></View>
@@ -383,14 +509,13 @@ export const CreateBill = (props) => {
                         <Text style={{borderBottomWidth:2, borderColor:'brown', width:'100%'}}/>
                         <View style={styles.listStyle}><Text style={{color:'brown'}}>TOTAL PRICE</Text><Text style={{color:'brown'}}><MaterialCommunityIcons name="currency-inr" size={15} color="brown" /> {GrandTotal}</Text></View>
                         </ListItem.Content>
-                    <ListItem.Chevron />
                 </ListItem>
             
             </View>
 
             <View style={{position:"absolute", bottom:0, width:'100%'}}>
                 <ButtonGroup
-                    buttons={['Payment','Part Payment', 'EMI']}
+                    buttons={['Payment','EMI']}
                     onPress={(index) =>PaymentFunciton(index)}
                     buttonStyle={{backgroundColor:'#2288dc', borderRadius:5}}
                     containerStyle={{borderColor:'white',  height:50}}

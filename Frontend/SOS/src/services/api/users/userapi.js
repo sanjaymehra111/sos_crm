@@ -45,14 +45,15 @@ export async function VerifyOTP (contact, otp) {
 
 
 
-export async function CreateUser (user_name, contact, shop_name, address) { 
+export async function CreateUser (user_name, contact, shop_name, address, gst) { 
 
     try{
         var res = await AxiosInstance.post('create_user',{
             user_name, 
             contact, 
             shop_name, 
-            address
+            address,
+            gst
             
         })
         //console.log("ID USER API : ", res.data.res.insertId);
@@ -261,6 +262,28 @@ export async function CreateNewPayment (bill_id, pay, total_pay, balance) {
             pay, 
             total_pay,
             balance,
+        },{headers: { Authorization:'token='+await GetAsyncToken()} })
+        //console.log("payment res :", res.data)
+        return 'success';
+    } // try close
+
+    catch(e){
+        return 'error';
+    }
+}
+
+
+
+export async function CreateNewEmiPayment (bill_id, customer_id, total_price, pay, balance, total_pay, emi_date) { 
+    try{
+        var res = await AxiosInstance.post('create_new_emi_payment',{
+            bill_id, 
+            customer_id, 
+            total_price, 
+            pay, 
+            balance, 
+            total_pay,
+            emi_date
         },{headers: { Authorization:'token='+await GetAsyncToken()} })
         //console.log("payment res :", res.data)
         return 'success';

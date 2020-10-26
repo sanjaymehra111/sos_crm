@@ -175,6 +175,18 @@ module.exports = app =>{
     });
 
 
+    // create new emi payment
+    app.post("/create_new_emi_payment",VerifyToken, (req, res) =>{
+        jwt.verify(req.token, jwtsc, (err, auth) => {
+            if(err) {
+                res.json({ message: "unauthorized" });
+            } else {
+                home.create_new_emi_payment(req, res, auth);
+            }
+          });
+    });
+
+
     // User Validation
     app.post("/valid_user", home.valid_user);
 

@@ -15,7 +15,9 @@ import {EnterOtp, Login} from '../../screens/user/login'
 import Register_User from '../../screens/user/user_registration'
 import {UserDashboard} from '../../screens/user/dashboard'
 import {UserProfile} from '../../screens/user/user_profile'
-import {SelectCustomerForBill, SelectProductForBill, CreateBill} from '../../screens/user/create_bill'
+//import {SelectCustomerForBill, SelectProductForBill, CreateBill} from '../../screens/user/create_bill'
+import {CreateBill} from '../../screens/user/create_new_bill'
+
 import {CreateCustomer} from '../../screens/user/create_customer'
 import {CreateProduct} from '../../screens/user/create_product'
 import {UserViewCustomer} from '../../screens/user/view_user_customer'
@@ -90,7 +92,7 @@ const UserDashboardScreen = ({navigation}) => {
 
     const BillStackScreen = (props) =>{
         return(
-            <ProfileStack.Navigator /* initialRouteName='UserViewPayment' */ initialRouteName='UserSpecficEmiDetails' >
+            <ProfileStack.Navigator initialRouteName='UserViewPayment' /* initialRouteName='UserSpecficEmiDetails' */>
                 
                 <ProfileStack.Screen name='UserViewPayment' component={UserViewPayment} 
                     options={{
@@ -100,7 +102,7 @@ const UserDashboardScreen = ({navigation}) => {
                     }}
                 />
           
-                <ProfileStack.Screen name='SelectProductForBill' component={SelectProductForBill} 
+                {/* <ProfileStack.Screen name='SelectProductForBill' component={SelectProductForBill} 
                     options={{
                         headerTitle: 'Selct Product',
                         headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
@@ -113,12 +115,13 @@ const UserDashboardScreen = ({navigation}) => {
                         headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                         headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('SelectProductForBill') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                     }}
-                />
+                /> */}
+
                 <ProfileStack.Screen name='CreateBill' component={CreateBill} 
                     options={{
-                        headerTitle: 'Create Bill',
+                        headerTitle: 'Create New Bill',
                         headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('SelectCustomerForBill') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserViewPayment') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                     }}
                 />
                 
@@ -126,7 +129,7 @@ const UserDashboardScreen = ({navigation}) => {
                     options={{
                         headerTitle: 'Specific Details',
                         headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                        headerLeft: () => ( <Icon onPress={() => props.navigation.goBack() } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserViewPayment') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                     }}
                 />
           
@@ -290,7 +293,7 @@ const UserDashboardScreen = ({navigation}) => {
                                 onPress={()=>{props.navigation.navigate('CreateProduct')}}
                             /> */}
 
-                            <DrawerItem
+                            {/* <DrawerItem
                                 label='Product'
                                 icon={({focused, color, size}) => (
                                     <FontAwesome5 
@@ -300,7 +303,7 @@ const UserDashboardScreen = ({navigation}) => {
                                     />
                                 )}
                                 onPress={()=>{props.navigation.navigate('ViewProduct')}}
-                            />
+                            /> */}
 
                             {/* <DrawerItem
                                 label='Create Customer'
@@ -314,7 +317,7 @@ const UserDashboardScreen = ({navigation}) => {
                                 onPress={()=>{props.navigation.navigate('CreateCustomer')}}
                             /> */}
 
-                            <DrawerItem
+                            {/* <DrawerItem
                                 label='Customer'
                                 icon={({focused, color, size}) => (
                                     <FontAwesome5 
@@ -324,7 +327,9 @@ const UserDashboardScreen = ({navigation}) => {
                                     />
                                 )}
                                 onPress={()=>{props.navigation.navigate('ViewCustomer')}}
-                            />
+                            /> */}
+
+                            
 
                         </Drawer.Section>
 

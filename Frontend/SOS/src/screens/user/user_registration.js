@@ -36,6 +36,12 @@ const Register_User = ({navigation, route}) => {
     const [addressErrStyle, setAddressErrStyle] = useState(false);
     const addressinput = React.createRef();
     
+    const [Gst, setGst] = useState('');
+    const [GstErr, setGstErr] = useState('');
+    const [GstFocus, setGstFocus] = useState(false);
+    const [GstErrStyle, setGstErrStyle] = useState(false);
+    const Gstinput = React.createRef();
+    
     async function SEND_OTP(){
         if(contact != route.params.cont){
             setContactErr('enter a valid contact number');
@@ -75,7 +81,7 @@ const Register_User = ({navigation, route}) => {
         }
 
         else {
-            var response = await CreateUser(user, contact, shop, address);
+            var response = await CreateUser(user, contact, shop, address, Gst);
             //alert("Message Is : "+response)
             
             if(response != 'success')
@@ -127,7 +133,7 @@ const Register_User = ({navigation, route}) => {
                         onChangeText = {(contact) => setContact(contact)}
                         maxLength={10}
                         keyboardType={'number-pad'}
-                        placeholder='Enter Contact Number'
+                        placeholder='Enter Contact Number*'
                         leftIcon={ <Icon name='phone' size={25} color='gray'/>}
                         errorStyle={{ color: 'red', textTransform:'capitalize' }}
                         errorMessage={contactErr}
@@ -141,7 +147,7 @@ const Register_User = ({navigation, route}) => {
                         inputContainerStyle={[userFocus ? styles.inputFocused : {}, userErrStyle ? styles.inputErr : {} ]}
                         onChangeText = {(user) => setUser(user)}
                         maxLength={100}
-                        placeholder='Enter User Name'
+                        placeholder='Enter User Name*'
                         leftIcon={ <Icon name='user' size={25} color='gray'/>}
                         errorStyle={{ color: 'red', textTransform:'capitalize' }}
                         errorMessage={userErr}
@@ -154,7 +160,7 @@ const Register_User = ({navigation, route}) => {
                         inputContainerStyle={[shopFocus ? styles.inputFocused : {}, shopErrStyle ? styles.inputErr : {} ]}
                         onChangeText = {(shop) => setShop(shop)}
                         maxLength={100}
-                        placeholder='Enter Shop Name'
+                        placeholder='Enter Shop Name*'
                         leftIcon={ <Icon name='home' size={25} color='gray'/>}
                         errorStyle={{ color: 'red', textTransform:'capitalize' }}
                         errorMessage={shopErr}
@@ -166,10 +172,23 @@ const Register_User = ({navigation, route}) => {
                         onFocus={() => setAddressFocus(true)}
                         inputContainerStyle={[addressFocus ? styles.inputFocused : {}, addressErrStyle ? styles.inputErr : {} ]}
                         onChangeText = {(address) => setAddress(address)}
-                        placeholder='Enter Address'
+                        placeholder='Enter Address*'
                         leftIcon={ <Icon name='map-marker' size={25} color='gray'/>}
                         errorStyle={{ color: 'red', textTransform:'capitalize' }}
                         errorMessage={addressErr}
+                    />
+
+                    <Input 
+                        value = {Gst}
+                        ref={Gstinput}
+                        onFocus={() => setGstFocus(true)}
+                        inputContainerStyle={[GstFocus ? styles.inputFocused : {}, GstErrStyle ? styles.inputErr : {} ]}
+                        onChangeText = {(Gst) => setGst(Gst)}
+                        placeholder='Enter GST Number'
+                        maxLength={15}
+                        leftIcon={ <Icon name='address-card' size={25} color='gray'/>}
+                        errorStyle={{ color: 'red', textTransform:'capitalize' }}
+                        errorMessage={GstErr}
                     />
 
                </View>

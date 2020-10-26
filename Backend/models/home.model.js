@@ -23,13 +23,14 @@ const User = function(user) {
     this.user_name = user.user_name;
     this.shop_name = user.shop_name;
     this.address = user.address;
+    this.gst = user.gst;
     this.otp = user.otp;
   };
 
 
-  User.create_user = (user_name, contact, shop_name, address, result) => {
+  User.create_user = (user_name, contact, shop_name, address, gst, result) => {
     var date = CurDate();
-    sql.query("INSERT INTO user_details SET user_name = ?, contact = ?, shop_name = ?, address = ?, user_type = ?, date = ?", [user_name, contact, shop_name, address, 'user', date], (err, res) => {
+    sql.query("INSERT INTO user_details SET user_name = ?, contact = ?, shop_name = ?, address = ?, gst_number = ?, user_type = ?, date = ?", [user_name, contact, shop_name, address, gst, 'user', date], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -162,6 +163,30 @@ const User = function(user) {
     });
   };
 
+
+  
+  User.get_emi_payment_details_via_bill_id = (user_id, bid, result) => {
+    sql.query('select * from emi_payment_details where user_id = '+user_id+' and bill_id = '+bid+' ', (err, res) =>{
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (!res.length) {
+        result(null, null);
+        return;
+      }
+
+      if (res.length) {
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "not_found" }, null);
+    });
+  };
+
   User.get_emi_bill_details_via_bill_id = (user_id, bid, result) => {
     sql.query('select * from emi_details where user_id = '+user_id+' and bill_id = '+bid+'', (err, res) =>{
       if (err) {
@@ -258,6 +283,20 @@ const User = function(user) {
         result(err, null);
         return;
       }
+      result(null, { res });
+    });
+  };
+
+
+  User.create_new_emi_payment = (user_id, bill_id, customer_id, pay,  balance, total_price, total_pay,  emi_date, result) => {
+    var date = CurDate();
+    sql.query("INSERT INTO emi_payment_details SET user_id = ?, bill_id = ?, customer_id = ?, pay = ?, balance = ?, total_price = ?, total_pay = ?, emi_date = ?, date = ?",
+     [user_id, bill_id, customer_id, pay,  balance, total_price, total_pay,  emi_date, date], (err, res) => {
+      if (err) {
+        result(err, null);
+        return;
+      }
+      
       result(null, { res });
     });
   };
