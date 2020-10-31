@@ -226,9 +226,9 @@ const User = function(user) {
     });
   };
 
-  User.create_new_customer = (user_id, name, contact, email, address, aadhar, result) => {
+  User.create_new_customer = (user_id, name, contact, address, aadhar, pan, result) => {
     var date = CurDate();
-    sql.query("INSERT INTO customer_details SET user_id = ?, name = ?, contact = ?, email = ?, address = ?, aadhar = ?, date = ?", [user_id, name, contact, email, address, aadhar, date], (err, res) => {
+    sql.query("INSERT INTO customer_details SET user_id = ?, name = ?, contact = ?, address = ?, aadhar = ?, pan = ?, date = ?", [user_id, name, contact, address, aadhar, pan, date], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -290,6 +290,10 @@ const User = function(user) {
 
   User.create_new_emi_payment = (user_id, bill_id, customer_id, pay,  balance, total_price, total_pay,  emi_date, result) => {
     var date = CurDate();
+    if(balance < 0) {
+      balance = '0';
+    }
+
     sql.query("INSERT INTO emi_payment_details SET user_id = ?, bill_id = ?, customer_id = ?, pay = ?, balance = ?, total_price = ?, total_pay = ?, emi_date = ?, date = ?",
      [user_id, bill_id, customer_id, pay,  balance, total_price, total_pay,  emi_date, date], (err, res) => {
       if (err) {
@@ -305,8 +309,10 @@ const User = function(user) {
   
   User.update_bill_details = (user_id, bill_id, pay, balance, result) => {
     var status = '0';
-    if(balance == "0")
+    if(balance <= 0){
       status = '1';
+      balance='0';
+    }
 
     var date = CurDate();
     sql.query("update bill_details SET pay = ?, balance = ?, status = ?, updated_date = ? where id = '"+bill_id+"' and user_id = '"+user_id+"' ",

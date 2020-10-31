@@ -92,15 +92,8 @@ const UserDashboardScreen = ({navigation}) => {
 
     const BillStackScreen = (props) =>{
         return(
-            <ProfileStack.Navigator initialRouteName='UserViewPayment' /* initialRouteName='UserSpecficEmiDetails' */>
+            <ProfileStack.Navigator initialRouteName='CreateBill'>
                 
-                <ProfileStack.Screen name='UserViewPayment' component={UserViewPayment} 
-                    options={{
-                        headerTitle: 'Payment Record',
-                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserDashboard') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                    }}
-                />
           
                 {/* <ProfileStack.Screen name='SelectProductForBill' component={SelectProductForBill} 
                     options={{
@@ -121,21 +114,41 @@ const UserDashboardScreen = ({navigation}) => {
                     options={{
                         headerTitle: 'Create New Bill',
                         headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserViewPayment') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.goBack() } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
                     }}
                 />
                 
-                <ProfileStack.Screen name='UserSpecficEmiDetails' component={UserSpecficEmiDetails} 
-                    options={{
-                        headerTitle: 'Specific Details',
-                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserViewPayment') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
-                    }}
-                />
           
             </ProfileStack.Navigator>
         )
     }
+
+
+
+    const PaymentBillStackScreen = (props) =>{
+        return(
+            <ProfileStack.Navigator>
+                
+                <ProfileStack.Screen name='UserViewPayment' component={UserViewPayment} 
+                    options={{
+                        headerTitle: 'Payment Record',
+                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserDashboard') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    }}
+                />
+
+                <ProfileStack.Screen name='UserSpecficEmiDetails' component={UserSpecficEmiDetails} 
+                    options={{
+                        headerTitle: 'Specific Details',
+                        headerRight: () => ( <Icon onPress={() => props.navigation.openDrawer()} name="menu" containerStyle={{marginRight:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                        //headerLeft: () => ( <Icon onPress={() => props.navigation.navigate('UserViewPayment') } name="arrow-back" containerStyle={{marginLeft:10}} iconStyle={{color:'#2288dc', fontSize:25}} />),
+                    }}
+                />
+       
+            </ProfileStack.Navigator>
+        )
+    }
+
 
     const ProductStackScreen = (props) =>{
         return(
@@ -273,6 +286,18 @@ const UserDashboardScreen = ({navigation}) => {
                                 label='Payment'
                                 icon={({focused, color, size}) => (
                                     <FontAwesome5 
+                                        name='clipboard-list'
+                                        color={color}
+                                        size={size}
+                                    />
+                                )}
+                                onPress={()=>{props.navigation.navigate('UserViewPayment')}}
+                            />
+
+                            <DrawerItem
+                                label='Create Bill'
+                                icon={({focused, color, size}) => (
+                                    <FontAwesome5 
                                         name='receipt'
                                         color={color}
                                         size={size}
@@ -360,6 +385,7 @@ const UserDashboardScreen = ({navigation}) => {
         <NavigationContainer>
              <Drawers.Navigator drawerContent={props => <CustomDrawerNavigator {...props} />}>
                 <Drawers.Screen name='UserDashboard' component={TabsScreen}/>
+                <Drawers.Screen name='UserViewPayment' component={PaymentBillStackScreen}/>
                 <Drawers.Screen name='CreateBill' component={BillStackScreen}/>
                 <Drawers.Screen name='CreateProduct' component={ProductStackScreen}/>
                 <Drawers.Screen name='ViewProduct' component={ViewProductStackScreen}/>

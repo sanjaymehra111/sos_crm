@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
+import { StyleSheet, View, FlatList, TouchableOpacity, ScrollView} from 'react-native';
 import { Button} from 'react-native-elements';
 import {GetLoggedInUserCustomerDetails} from '../../services/api/users/userapi'
 import {Avatar, Title, Caption} from 'react-native-paper'
@@ -31,6 +31,7 @@ export const UserProfile = () => {
 
     }
     return(
+        <ScrollView>
         <View style={styles.LoginView}>
             <View style={styles.userInfoSection}>
                 <View style={{flexDirection:'row'}}>
@@ -49,6 +50,8 @@ export const UserProfile = () => {
             
             </View>
         </View>
+
+        </ScrollView>
 )
 }
 

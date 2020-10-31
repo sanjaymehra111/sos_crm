@@ -82,8 +82,12 @@ export const UserSpecficEmiDetails = (props) => {
                     var CheckBoxLayout = <CheckBox uncheckedColor="lightgray" uncheckedIcon="lock" checkedColor="green" containerStyle={{marginTop:19}} checked={false} style={styles.emiCheckbox} />;
                     if(paid_month > i)
                         CheckBoxLayout = <CheckBox uncheckedColor="lightgray" checkedColor="green" containerStyle={{marginTop:19}} checked={true} style={styles.emiCheckbox} />;
-                    if(paid_month == i)
-                        CheckBoxLayout = <CheckBox onPress={() => CheckFunction(EmiDetails[0].date, (i+1))} uncheckedColor="green" checkedColor="green" containerStyle={{marginTop:19}} checked={false} style={styles.emiCheckbox} />;
+                    
+                    if(paid_month == i){
+                        var id = i+1;
+                        CheckBoxLayout = <CheckBox onPress={() => CheckFunction(EmiDetails[0].date,id)} uncheckedColor="green" checkedColor="green" containerStyle={{marginTop:19}} checked={false} style={styles.emiCheckbox} />;
+                    }
+                    
 
                     emi_section.push(
                         <View key = {i+1} style={{flexDirection:'row', marginTop:10, justifyContent:'space-between'}}>
@@ -135,7 +139,7 @@ export const UserSpecficEmiDetails = (props) => {
                         <ScrollView>
                             {emi_section}
                         </ScrollView>
-
+                        
                     </View>
 
 

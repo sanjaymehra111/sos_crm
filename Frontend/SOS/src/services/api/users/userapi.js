@@ -174,17 +174,17 @@ export async function CreateNewProduct (product_name, product_price, product_emi
     }
 }
 
-export async function CreateNewCustomer (name, contact, email, address, aadhar) { 
+export async function CreateNewCustomer (name, contact, address, aadhar, pan) { 
     try{
         var res = await AxiosInstance.post('create_new_customer',{
             name, 
             contact, 
-            email, 
             address, 
-            aadhar 
+            aadhar,
+            pan
         },{headers: { Authorization:'token='+await GetAsyncToken()} })
         //console.log("res :", res.data)
-        return 'success';
+        return res.data;
     } // try close
 
     catch(e){
@@ -193,7 +193,14 @@ export async function CreateNewCustomer (name, contact, email, address, aadhar) 
 }
 
 
-export async function CreateNewBill (p_id, c_id, c_name, c_contact, name, emi, price, cgst, sgst, igst, total_price, pay, balance, type) { 
+export async function CreateNewBill (c_name, c_contact, c_address, c_aadhar, c_pan, name, emi, price, cgst, sgst, igst, total_price, pay, balance, type) { 
+
+    var CustRes = await CreateNewCustomer(c_name, c_contact, c_address, c_aadhar, c_pan)
+    var ProdRes = await CreateNewProduct(name, price, emi)
+    
+    p_id=ProdRes.res.insertId; 
+    c_id=CustRes.res.insertId;
+
     try{
         var res = await AxiosInstance.post('create_new_bill',{
             p_id, 
@@ -222,7 +229,14 @@ export async function CreateNewBill (p_id, c_id, c_name, c_contact, name, emi, p
 
 
 
-export async function CreateNewEmiBill (p_id, c_id, c_name, c_contact, name, emi, price, cgst, sgst, igst, total_price, pay, emi_month, emi_percent, balance, emi_month_amount, emi_total, total_pay, type) { 
+export async function CreateNewEmiBill (c_name, c_contact, c_address, c_aadhar, c_pan, name, emi, price, cgst, sgst, igst, total_price, pay, emi_month, emi_percent, balance, emi_month_amount, emi_total, total_pay, type) { 
+    
+    var CustRes = await CreateNewCustomer(c_name, c_contact, c_address, c_aadhar, c_pan)
+    var ProdRes = await CreateNewProduct(name, price, emi)
+    
+    p_id=ProdRes.res.insertId; 
+    c_id=CustRes.res.insertId;
+
     try{
         var res = await AxiosInstance.post('create_new_emi_bill',{
             p_id, 
@@ -295,8 +309,30 @@ export async function CreateNewEmiPayment (bill_id, customer_id, total_price, pa
 }
 
 
-// ******************************************** User TOKEN VERIFICATION API'S *****************************//
 
+
+// ******************************************** User UPLOAD IMAGES  *****************************//
+
+export async function UploadImage (file, type) { 
+    try{
+        var res = await AxiosInstance.post('upload_image_to_server',{
+            file, 
+            type
+        },{headers: { Authorization:'token='+await GetAsyncToken()} })
+        return res.data;
+    } // try close
+
+    catch(e){
+        return 'error';
+    }
+}
+
+
+
+
+
+
+// ******************************************** User TOKEN VERIFICATION API'S *****************************//
 
 export async function StoreToken() { 
     const userID = await AsyncStorage.getItem('userID');

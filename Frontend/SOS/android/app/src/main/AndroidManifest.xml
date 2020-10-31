@@ -2,6 +2,13 @@
   package="com.sos">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- Rear Camera -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- front Camera -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
 
     <application
       android:name=".MainApplication"

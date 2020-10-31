@@ -200,7 +200,7 @@ exports.create_user = (req, res) => {
     }
 
     // Save Customer in the database
-    User.create_new_customer(auth.USER_ID, req.body.name, req.body.contact, req.body.email, req.body.address, req.body.aadhar, (err, data) => {
+    User.create_new_customer(auth.USER_ID, req.body.name, req.body.contact, req.body.address, req.body.aadhar, req.body.pan, (err, data) => {
       if (err)
         res.status(500).send({
           message:
@@ -346,6 +346,22 @@ exports.create_user = (req, res) => {
       }
     });
   };
+
+
+
+
+
+//************   upload image to server *********/
+
+  
+  exports.upload_image_to_server = (req, res, auth) => {
+
+    console.log("Server Data : ",req.body);
+ 
+  };
+
+
+
 
 
   exports.send_otp = (req, res) => {

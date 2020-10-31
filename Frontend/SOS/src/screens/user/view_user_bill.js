@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
+import { StyleSheet, View, FlatList, TouchableOpacity, Text, ScrollView} from 'react-native';
 import {GetLoggedInUserBillDetails, CreateNewPayment} from '../../services/api/users/userapi'
 import {FormatDate} from '../../utils/function'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -7,11 +7,15 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ListItem, Avatar, SearchBar, ButtonGroup, Overlay, Button, Input} from 'react-native-elements';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import RNPickerSelect from 'react-native-picker-select';
 
 export const UserViewPayment = (props) => { 
 
     const [details,setDetails] =useState([]);
+    const [SearchDetails,setSearchDetails] =useState([]);
     const [paymentdetails,setPaymentdetails] =useState([{}]);
+    const [search, setSearch] =useState('');
+    const [EmiMonthValue, setEmiMonthValue] = useState('1');
 
     const [visible, setVisible] = useState(false);
     const [partpayment, setPartpayment] = useState('');
@@ -22,24 +26,46 @@ export const UserViewPayment = (props) => {
     const [partpaymentdisplay, setPartpaymentdisplay] = useState('none');
     const [EmiDisplay, setEmiDisplay] = useState('none');
     const [RightIconDisplay, setRightIconDisplay] = useState('flex');
-
+    
+    const [Inter, SetInter] = useState(0);
+    
     const toggleOverlay = () => {
         setVisible(!visible);
     };
 
     useEffect(()=>{
         getfuncion();
-        setInterval(()=>{
+        let interval =  setInterval(()=>{
             getfuncion();
-        },5000)
+        },5000);
+        SetInter(interval);
+
+        return ()=>{clearInterval(interval)}
     },[])
     
     
     async function getfuncion(){
+        if(search) return;
         const res = await GetLoggedInUserBillDetails();
         setDetails([...res]);
+        setSearchDetails([...res]);
     }
 
+    const SearchProductData= (search)=>  {
+        var newData;
+        if(!search){
+            newData = SearchDetails;
+        } else {
+            clearInterval(Inter);
+            newData = SearchDetails.filter(item => {
+                const itemData = item.pay_type.toUpperCase();
+                const textData = search.toUpperCase();
+                return  itemData.indexOf(textData) > -1
+            });
+        }
+        setDetails(newData);
+        setSearch(search);
+    };
 
     const SelectCustomer = (item) =>{
         if(item.status == '0' && item.pay_type == 'part'){
@@ -59,7 +85,6 @@ export const UserViewPayment = (props) => {
         setPaymentdetails([item])
         toggleOverlay();
     }
-
 
     async function UpdatePaymentDetails(){
         if(partpayment == '' || parseFloat(partpayment) > parseFloat(paymentdetails[0].balance) ){
@@ -95,7 +120,33 @@ export const UserViewPayment = (props) => {
     }
 
     return(
+
         <View style={styles.LoginView}>
+
+            <RNPickerSelect
+                onValueChange={(value) =>  SearchProductData(value)}
+                placeholder={{ label: 'Select Period'}}
+                key={search}
+                value={search}
+                useNativeAndroidPickerStyle={true}
+                style={SelectStyle}
+                placeholder={{label:'Select Payment Type', value:null, color:'lightgray'}}
+                color='red'
+                items={[
+                    { label: 'Full Payment', value: 'full'},
+                    { label: 'Emi Payment', value: 'emi' },
+                ]}
+            />
+
+            {/* <SearchBar
+                placeholder="Search Product..."
+                onChangeText={(search) => SearchProductData(search)}
+                value={search}
+                containerStyle={{borderColor:'gray', borderWidth:1, padding:0,  borderRadius:50}}
+                inputContainerStyle={{backgroundColor:"white", borderWidth:1,borderColor:'white', borderRadius:50}}
+            /> */}
+
+
             <FlatList
             data={details}
             renderItem={({item})=>{
@@ -135,10 +186,14 @@ export const UserViewPayment = (props) => {
             keyExtractor={(item, index) => index.toString()}
            />
 
+
             <View style={styles.AddButtonView}>
                 <MaterialCommunityIcons name="plus" size={20} color="white" style={{padding:25}}  onPress={()=>{props.navigation.navigate('CreateBill')}} />
             </View>
         <View>
+
+
+
                 <Overlay isVisible={visible} overlayStyle={{borderRadius:10}} onBackdropPress={toggleOverlay}>
                 <View style={{ padding:40}}>
                         <View style={{alignItems:'center'}}>
@@ -186,10 +241,14 @@ export const UserViewPayment = (props) => {
 
                     </View>
                 </Overlay>
+        
+        
         </View>
         
         
         </View>
+    
+
     )
 }
 
@@ -230,5 +289,13 @@ const styles = StyleSheet.create({
         marginTop:10, 
         marginBottom:-20,
     },
-   
+
     });
+
+    const SelectStyle = {
+        placeholder:{color:"lightgray"},
+        viewContainer:{borderBottomWidth:1, borderBottomColor:'gray', color:"red"}, 
+        inputAndroidContainer:{backgroundColor:"white", alignItems:"center", borderBottomColor:'gray', borderBottomWidth:2},
+        useNativeAndroidPickerStyle:{color:"red"}
+        
+    }

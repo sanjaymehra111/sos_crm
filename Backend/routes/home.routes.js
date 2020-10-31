@@ -1,8 +1,11 @@
 module.exports = app =>{
 
     const home = require('../controllers/home.controller')
+    const path = require('path');    
     const jwt = require("jsonwebtoken");
     const jwtsc = '#@Sos#2233$Crm%$Admin#' 
+    const fs = require('fs');
+    const {GetCode} = require('../controllers/OtpController')
 
 
     //*********************************  AUTH API ************************************//
@@ -194,6 +197,22 @@ module.exports = app =>{
     app.post("/shop_details/:sid", home.findOne);
 
 
+    
+    //*********************************  upload image ************************************//
+
+
+    // create new emi payment
+    app.post("/upload_image_to_server",VerifyToken,(req, res) =>{
+       jwt.verify(req.token, jwtsc, async (err, auth) => {
+            if(err) {
+                res.json({ message: "unauthorized" });
+            } else {
+                UploadImage(req, res);
+            }
+          });
+    });
+
+
 
     //*********************************  Token Verification ************************************//
 
@@ -213,5 +232,30 @@ module.exports = app =>{
           }
 
     }
+
+
+
+    //*********************************  Upload Image ************************************//
+
+    var FilePath = '../images/uploaded/'+path.relative(process.cwd(), '');
+
+    async function UploadImage(req, res){
+        try {
+            var FileName = req.body.type+await GetCode()+Date.now()+'.jpeg';
+            // to declare some path to store your converted image
+            const path = FilePath+FileName;
+            const imgdata = req.body.file;
+            // to convert base64 format into random filename
+            const base64Data = imgdata.replace(/^data:([A-Za-z-+/]+);base64,/, '');
+            //const base64Data = req.body.file;
+            fs.writeFileSync(path, base64Data,  {encoding: 'base64'});
+            return res.json({ message: FileName });
+        } catch (e) {
+            return res.json({ message: 'error' });
+        }
+    }
+
+
+
 
 }
