@@ -174,14 +174,18 @@ export async function CreateNewProduct (product_name, product_price, product_emi
     }
 }
 
-export async function CreateNewCustomer (name, contact, address, aadhar, pan) { 
+export async function CreateNewCustomer (name, contact, address, aadhar, pan, u_image, adf_image, adb_image, pan_image) { 
     try{
         var res = await AxiosInstance.post('create_new_customer',{
             name, 
             contact, 
             address, 
             aadhar,
-            pan
+            pan,
+            u_image, 
+            adf_image, 
+            adb_image, 
+            pan_image
         },{headers: { Authorization:'token='+await GetAsyncToken()} })
         //console.log("res :", res.data)
         return res.data;
@@ -195,7 +199,7 @@ export async function CreateNewCustomer (name, contact, address, aadhar, pan) {
 
 export async function CreateNewBill (c_name, c_contact, c_address, c_aadhar, c_pan, name, emi, price, cgst, sgst, igst, total_price, pay, balance, type) { 
 
-    var CustRes = await CreateNewCustomer(c_name, c_contact, c_address, c_aadhar, c_pan)
+    var CustRes = await CreateNewCustomer(c_name, c_contact, c_address, c_aadhar, c_pan, '', '', '', '')
     var ProdRes = await CreateNewProduct(name, price, emi)
     
     p_id=ProdRes.res.insertId; 
@@ -229,9 +233,9 @@ export async function CreateNewBill (c_name, c_contact, c_address, c_aadhar, c_p
 
 
 
-export async function CreateNewEmiBill (c_name, c_contact, c_address, c_aadhar, c_pan, name, emi, price, cgst, sgst, igst, total_price, pay, emi_month, emi_percent, balance, emi_month_amount, emi_total, total_pay, type) { 
+export async function CreateNewEmiBill (c_name, c_contact, c_address, c_aadhar, c_pan, name, emi, price, cgst, sgst, igst, total_price, pay, emi_month, emi_percent, balance, emi_month_amount, emi_total, total_pay, type, u_image, adf_image, adb_image, pan_image) { 
     
-    var CustRes = await CreateNewCustomer(c_name, c_contact, c_address, c_aadhar, c_pan)
+    var CustRes = await CreateNewCustomer(c_name, c_contact, c_address, c_aadhar, c_pan, u_image, adf_image, adb_image, pan_image)
     var ProdRes = await CreateNewProduct(name, price, emi)
     
     p_id=ProdRes.res.insertId; 

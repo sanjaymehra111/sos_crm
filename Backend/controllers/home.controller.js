@@ -156,8 +156,17 @@ exports.create_user = (req, res) => {
                         message:
                           err.message || "Some error occurred while creating the Customer."
                       });
-                    else {
-                      res.send([emidata,billdata,emipayment]);
+                      else {
+                        User.get_specific_customer_details(billdata[0].customer_id, (err, Customer) => {
+                          if (err)
+                            res.status(500).send({
+                              message:
+                                err.message || "Some error occurred while creating the Customer."
+                            });
+                          else {
+                            res.send([emidata,billdata,emipayment,Customer]);
+                          }
+                        });
                     }
                   });
               }
@@ -200,7 +209,7 @@ exports.create_user = (req, res) => {
     }
 
     // Save Customer in the database
-    User.create_new_customer(auth.USER_ID, req.body.name, req.body.contact, req.body.address, req.body.aadhar, req.body.pan, (err, data) => {
+    User.create_new_customer(auth.USER_ID, req.body.name, req.body.contact, req.body.address, req.body.aadhar, req.body.pan, req.body.u_image, req.body.adf_image, req.body.adb_image, req.body.pan_image, (err, data) => {
       if (err)
         res.status(500).send({
           message:

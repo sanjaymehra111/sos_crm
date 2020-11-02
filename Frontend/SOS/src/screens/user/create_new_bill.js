@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
+import {Text, StyleSheet, View, FlatList, TouchableOpacity, ScrollView, ActivityIndicator, SafeAreaView} from 'react-native';
 import {GetLoggedInUserProductDetails, GetLoggedInUserCustomerDetails, CreateNewBill, CreateNewEmiBill} from '../../services/api/users/userapi'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -19,11 +19,7 @@ var CustomerFinalDetails = {data :[{}]};
 
 export const CreateBill = (props) => {
 
-
     //****************************************** Create Customer  ***************************************/
-
-
-        
 
     const [user, setUser] = useState('');
     const [userErr, setUserErr] = useState('');
@@ -55,9 +51,7 @@ export const CreateBill = (props) => {
     const [panErrStyle, setPanErrStyle] = useState(false);
     const paninput = React.createRef();
 
-    
-    
-    
+     
     //****************************************** Create Product  ***************************************/
 
     const [name, setName] = useState('');
@@ -66,14 +60,12 @@ export const CreateBill = (props) => {
     const [nameErrStyle, setNameErrStyle] = useState(false);
     const nameinput = React.createRef();
 
-
     const [price, setPrice] = useState('');
     const [priceErr, setPriceErr] = useState('');
     const [priceFocus, setPriceFocus] = useState(false);
     const [priceErrStyle, setPriceErrStyle] = useState(false);
     const priceinput = React.createRef();
     
-
     const [emi, setEmi] = useState('');
     const [emiErr, setEmiErr] = useState('');
     const [emiFocus, setEmiFocus] = useState(false);
@@ -86,35 +78,15 @@ export const CreateBill = (props) => {
     const [gstcheckErrStyle, setGstcheckErrStyle] = useState(false);
     const gstcheckinput = React.createRef();
 
+
+    //****************************************** Emi Section  ***************************************/
+
     const [finalPrice, setFinalPrice] = useState(false);
     const [firstPrice, setFirstPrice] = useState(false);
     const [gst_cgst, setGst_cgst] = useState(false);
     const [gst_sgst, setGst_sgst] = useState(false);
     const [gst_igst, setGst_igst] = useState(false);
     const [GrandTotal, setGrandTotal] = useState(false);
-
-
-    useEffect(()=>{
-        if(price > 0)
-            ShowPayDetails();
-    },[price, gstcheck])
-
-    function ShowPayDetails(){
-        setFirstPrice(price); //847
-        setGst_cgst('-'); // 152
-        setGst_sgst('-');  // 152
-        setGst_igst('-');
-
-        if(gstcheck == true){
-            var fp = Math.round(price*100/118);
-            setFirstPrice(fp); //847
-            setGst_cgst(Number((fp*0.09).toFixed(2))); // 152
-            setGst_sgst(Number((fp*0.09).toFixed(2)));  // 152
-            setGst_igst('-');
-        }
-        //const GrandTotal = Math.round(firstPrice+gst_cgst+gst_sgst);
-        setGrandTotal(price);
-    }
 
     const [Emipaidamount, setEmipaidamount] = useState('');
     const [Emibalanceamount, setEmibalanceamount] = useState('');
@@ -144,12 +116,55 @@ export const CreateBill = (props) => {
     const [emipercentFocus, setEmipercentFocus] = useState(false);
     const [emipercentErrStyle, setEmipercentErrStyle] = useState(false);
     const emipercentinput = React.createRef();
-
+    
     const [EmiMonthValue, setEmiMonthValue] = useState('1');
     const [emimonthFocus, setEmimonthFocus] = useState(false);
     const [emimonthErrStyle, setEmimonthErrStyle] = useState(false);
+
+    //****************************************** Images  ***************************************/
     
-    
+    const [UserImage, setUserImage] = useState('http://pcsetupvsss.xyz/sos/images/admin.png');
+    const [UserBase64Image, setUserBase64Image] = useState('');
+    const [userImageErr, setuserImageErr] = useState(false);
+    const UserImageErrFocus = React.createRef();
+        
+    const [PanImage, setPanImage] = useState('http://pcsetupvsss.xyz/sos/images/pan.png');
+    const [PanBase64Image, setPanBase64Image] = useState('');
+
+    const [AadharFrontImage, setAadharFrontImage] = useState('http://pcsetupvsss.xyz/sos/images/aadhar_front.png');
+    const [AadharFrontBase64Image, setAadharFrontBase64Image] = useState('');
+
+    const [AadharBackImage, setAadharBackImage] = useState('http://pcsetupvsss.xyz/sos/images/aadhar_back.png');
+    const [AadharBackBase64Image, setAadharBackBase64Image] = useState('');
+
+    const [ImageType, setImageType] = useState('');
+
+    const [Bottomvisible, setBottomvisible] = useState(false);
+
+    const [LoaderIcon, setLoaderIcon] = useState('none');
+
+    useEffect(()=>{
+        if(price > 0)
+            ShowPayDetails();
+    },[price, gstcheck])
+
+    function ShowPayDetails(){
+        setFirstPrice(price); //847
+        setGst_cgst('-'); // 152
+        setGst_sgst('-');  // 152
+        setGst_igst('-');
+
+        if(gstcheck == true){
+            var fp = Math.round(price*100/118);
+            setFirstPrice(fp); //847
+            setGst_cgst(Number((fp*0.09).toFixed(2))); // 152
+            setGst_sgst(Number((fp*0.09).toFixed(2)));  // 152
+            setGst_igst('-');
+        }
+        //const GrandTotal = Math.round(firstPrice+gst_cgst+gst_sgst);
+        setGrandTotal(price);
+    }
+
     function ShowEmiOutput(){
         var total_bal = GrandTotal-emipayment;
         var total_percent = EmiMonthValue*emipercent;
@@ -172,8 +187,6 @@ export const CreateBill = (props) => {
         emipayment,emipercent,EmiMonthValue
     ])
  
-
-
     const toggleOverlay = () => {
         setVisible(!visible);
     };
@@ -183,7 +196,7 @@ export const CreateBill = (props) => {
     };
 
     const PaymentFunciton = async (item) =>{
-        var check = await CheckUserData();
+        var check = await CheckUserData(item);
         if(check == 'success'){
             if(item == 0){
                 setPaymentType('full');
@@ -200,11 +213,78 @@ export const CreateBill = (props) => {
         }
     }
 
-    async function PayPaymentFunction(){
+    async function GstCheckFunction(){
+        if(gstcheck == true){
+            setGstcheck(false);
+        }
+        else{
+            setGstcheck(true);
+        }
+    }
 
+    async function SelectImage(type){
+        setImageType(type);
+        toggleBottomNavigationView();
+    }
+
+    async function SelectImageSection(type){
+        toggleBottomNavigationView();
+        if(type == 'cam'){
+            ImagePicker.openCamera({
+                cropping: true,
+                width: 300,
+                height: 300,
+                includeBase64:true
+            }).then(image => {
+                CallMainFunction(image, ImageType)
+            });
+        }
+        else{
+            ImagePicker.openPicker({
+                cropping: true,
+                width: 300,
+                height: 300,
+                includeBase64:true
+            }).then(image => {
+                CallMainFunction(image, ImageType)
+            });
+        }
+
+        async function CallMainFunction(image, type){
+            const Base64Image = `data:image/jpeg;base64,${image.data}`;
+            if(type == 'US'){
+                setUserImage(image.path);
+                setUserBase64Image(Base64Image);
+            }
+            else if(type == 'PN'){
+                setPanImage(image.path);
+                setPanBase64Image(Base64Image);
+            }
+            else if(type == 'ADF'){
+                setAadharFrontImage(image.path);
+                setAadharFrontBase64Image(Base64Image);
+            }
+            else if(type == 'ADB'){
+                setAadharBackImage(image.path);
+                setAadharBackBase64Image(Base64Image);
+            }
+
+            //var res = await UploadImageToServer(Base64Image, type) 
+            //console.warn("Final Res : ", res.message);
+        }
+
+    }
+
+    const toggleBottomNavigationView = () => {
+        setBottomvisible(!Bottomvisible);
+    };
+
+    async function PayPaymentFunction(){
+        setLoaderIcon('flex');
         var res = await CreateNewBill (CustomerFinalDetails.data[0].name, CustomerFinalDetails.data[0].contact, CustomerFinalDetails.data[0].address, CustomerFinalDetails.data[0].aadhar, CustomerFinalDetails.data[0].pan, ProductFinalDetails.data[0].name, ProductFinalDetails.data[0].emi, firstPrice, gst_cgst, gst_sgst, gst_igst, GrandTotal, GrandTotal, '0', PaymentType);
          if(res == 'success'){
              toggleOverlay();
+             ClearFunction();
              props.navigation.navigate('UserViewPayment')
          }else{
              alert('Server Error')
@@ -235,9 +315,18 @@ export const CreateBill = (props) => {
             emipercentinput.current.focus();
         }
         else{
+            setLoaderIcon('flex')
+            var BaseImage = [UserBase64Image, AadharFrontBase64Image, AadharBackBase64Image, PanBase64Image];
+            var BaseImageType = ['US','ADF','ADB', 'PN'];
+            var BaseImageName = [];
+
+            for(var i=0; i<BaseImage.length; i++){
+                var res = await UploadImageToServer(BaseImage[i], BaseImageType[i]) 
+                BaseImageName[i]=res;
+            }
             
             var emi_bal_amount = Emitotalamount - Emipaidamount;
-            var res = await CreateNewEmiBill (CustomerFinalDetails.data[0].name, CustomerFinalDetails.data[0].contact, CustomerFinalDetails.data[0].address, CustomerFinalDetails.data[0].aadhar, CustomerFinalDetails.data[0].pan, ProductFinalDetails.data[0].name, ProductFinalDetails.data[0].emi, firstPrice, gst_cgst, gst_sgst, gst_igst, /*GrandTotal*/ Emitotalamount, Emipaidamount, EmiMonthValue, emipercent, emi_bal_amount /*Emibalanceamount*/, Emimonthamount, Emipayableamount, Emitotalamount, PaymentType);
+            var res = await CreateNewEmiBill (CustomerFinalDetails.data[0].name, CustomerFinalDetails.data[0].contact, CustomerFinalDetails.data[0].address, CustomerFinalDetails.data[0].aadhar, CustomerFinalDetails.data[0].pan, ProductFinalDetails.data[0].name, ProductFinalDetails.data[0].emi, firstPrice, gst_cgst, gst_sgst, gst_igst, /*GrandTotal*/ Emitotalamount, Emipaidamount, EmiMonthValue, emipercent, emi_bal_amount /*Emibalanceamount*/, Emimonthamount, Emipayableamount, Emitotalamount, PaymentType, BaseImageName[0].message, BaseImageName[1].message, BaseImageName[2].message, BaseImageName[3].message);
             if(res == 'success'){
                 setEmipaymentErr('');
                 setEmipaymentErrStyle(false);
@@ -245,14 +334,16 @@ export const CreateBill = (props) => {
                 setEmipercentErr('');
                 setEmipercentErrStyle(false);
                 toggleEmiOverlay();
+                ClearFunction();
                 props.navigation.navigate('UserViewPayment')
             }else{
+                setLoaderIcon('none')
                 alert('Server Error')
             }
         }
     }
 
-    function CheckUserData(){
+    function CheckUserData(item){
         if(user == ''){
             setUserErr('please enter user name');
             setUserErrStyle(true);
@@ -314,120 +405,195 @@ export const CreateBill = (props) => {
         }
         else{
 
-            ProductFinalDetails.data = [];
-            CustomerFinalDetails.data = [];
+            if(item == 1){
+                if(UserBase64Image == ''){
+                    setuserImageErr(true);
+                    UserImageErrFocus.current.focus();
+                }
 
-            ProductFinalDetails.data.push({id:'', name:name, price:price, emi:emi})
-            CustomerFinalDetails.data.push({id:'', name:user, contact:contact, address:address, aadhar:aadhar, pan:pan })
+                else if(aadhar.length != 12 || AadharFrontBase64Image == '' || AadharBackBase64Image == ''){
+                    setAadharErr('please enter Aadhar Number and upload the image');
+                    setAadharErrStyle(true);
+                    aadharinput.current.shake();
+                    aadharinput.current.focus();
+                    setuserImageErr(false);
+                }
+                else if(pan.length != 10 || PanBase64Image == ''){
+                    setPanErr('please enter Pan Number and upload the image');
+                    setPanErrStyle(true);
+                    paninput.current.shake();
+                    paninput.current.focus();
+                    setuserImageErr(false);
+                }
+                else{
 
-            var in_amount = Number(GrandTotal / 2).toFixed(0);
-            setEmipayment(in_amount.toString());
+                    ProductFinalDetails.data = [];
+                    CustomerFinalDetails.data = [];
+    
+                    ProductFinalDetails.data.push({id:'', name:name, price:price, emi:emi})
+                    CustomerFinalDetails.data.push({id:'', name:user, contact:contact, address:address, aadhar:aadhar, pan:pan })
+    
+                    var in_amount = Number(GrandTotal / 2).toFixed(0);
+                    setEmipayment(in_amount.toString());
+                
+                    setUserErrStyle(false);
+                    setUserErr('');
         
-            setNameErr('');
-            setNameErrStyle(false);
+                    setContactErrStyle(false);
+                    setContactErr('');
+                    
+                    setAddressErrStyle(false);
+                    setAddressErr('');
+    
+                    setAadharErr('');
+                    setAadharErrStyle(false);
+    
+                    setPanErr('');
+                    setPanErrStyle(false);
+    
+                    setNameErr('');
+                    setNameErrStyle(false);
+    
+                    setPriceErr('');
+                    setPriceErrStyle(false);
+    
+                    setuserImageErr(false);
+                    
+                    return 'success';
+                }
+            }
+            
+            else{
 
-            setPriceErr('');
-            setPriceErrStyle(false);
+                ProductFinalDetails.data = [];
+                CustomerFinalDetails.data = [];
 
-            return 'success';
+                ProductFinalDetails.data.push({id:'', name:name, price:price, emi:emi})
+                CustomerFinalDetails.data.push({id:'', name:user, contact:contact, address:address, aadhar:aadhar, pan:pan })
+
+                var in_amount = Number(GrandTotal / 2).toFixed(0);
+                setEmipayment(in_amount.toString());
+            
+                setUserErrStyle(false);
+                setUserErr('');
+    
+                setContactErrStyle(false);
+                setContactErr('');
+                
+                setAddressErrStyle(false);
+                setAddressErr('');
+
+                setAadharErr('');
+                setAadharErrStyle(false);
+
+                setPanErr('');
+                setPanErrStyle(false);
+
+                setNameErr('');
+                setNameErrStyle(false);
+
+                setPriceErr('');
+                setPriceErrStyle(false);
+
+                return 'success';
+            }
         }
 
 
     }
+    
+    function ClearFunction(){
 
-    async function GstCheckFunction(){
-        if(gstcheck == true){
-            setGstcheck(false);
-        }
-        else{
-            setGstcheck(true);
-        }
+        setUser('');
+        setUserErr('');
+        setUserFocus(false);
+        setUserErrStyle(false);
+        
+        setContact('');
+        setContactErr('');
+        setContactFocus(false);
+        setContactErrStyle(false);
+        
+        setAddress('');
+        setAddressErr('');
+        setAddressFocus(false);
+        setAddressErrStyle(false);
+        
+        setAadhar('');
+        setAadharErr('');
+        setAadharFocus(false);
+        setAddressErrStyle(false);
+
+        setPan('');
+        setPanErr('');
+        setPanFocus(false);
+        setPanErrStyle(false)
+
+        setName('');
+        setNameErr('');
+        setNameFocus(false);
+        setNameErrStyle(false)
+        
+        setPrice('');
+        setPriceErr('');
+        setPriceFocus(false);
+        setPriceErrStyle(false)
+        
+        setEmi('');
+        setEmiErr('');
+        setEmiFocus(false);
+        setEmiErrStyle(false)
+        
+        setGstcheck(false);        
+
+        setFirstPrice('');
+        setGst_cgst('');
+        setGst_sgst('');
+        setGst_igst('');
+        setGrandTotal('');
+
+        setLoaderIcon('none')
+    
+        setUserImage('http://pcsetupvsss.xyz/sos/images/admin.png');
+        setUserBase64Image('');
+        setuserImageErr(false);
+            
+        setPanImage('http://pcsetupvsss.xyz/sos/images/pan.png');
+        setPanBase64Image('');
+
+        setAadharFrontImage('http://pcsetupvsss.xyz/sos/images/aadhar_front.png');
+        setAadharFrontBase64Image('');
+
+        setAadharBackImage('http://pcsetupvsss.xyz/sos/images/aadhar_back.png');
+        setAadharBackBase64Image('');
+
     }
-
-
-    const [UserImage, setUserImage] = useState('http://pcsetupvsss.xyz/sos/images/user1.png');
-    const [UserBase64Image, setUserBase64Image] = useState('');
-
-    const [PanImage, setPanImage] = useState('http://pcsetupvsss.xyz/sos/images/user1.png');
-    const [PanBase64Image, setPanBase64Image] = useState('');
-
-    const [AadharFrontImage, setAadharFrontImage] = useState('http://pcsetupvsss.xyz/sos/images/user1.png');
-    const [AadharFrontBase64Image, setAadharFrontBase64Image] = useState('');
-
-    const [AadharBackImage, setAadharBackImage] = useState('http://pcsetupvsss.xyz/sos/images/user1.png');
-    const [AadharBackBase64Image, setAadharBackBase64Image] = useState('');
-
-
-
-    async function SelectImage(type){
-        //ImagePicker.openCamera({
-        ImagePicker.openPicker({
-            cropping: true,
-            width: 300,
-            height: 300,
-            includeBase64:true
-        }).then(image => {
-            CallMainFunction(image, type)
-        });
-
-        async function CallMainFunction(image, type){
-            console.warn("Type : ", type);
-            const Base64Image = `data:image/jpeg;base64,${image.data}`;
-
-            if(type == 'US'){
-                setUserImage(image.path);
-                setUserBase64Image(Base64Image);
-            }
-            else if(type == 'PN'){
-                setPanImage(image.path);
-                setPanBase64Image(Base64Image);
-            }
-            else if(type == 'ADF'){
-                setAadharFrontImage(image.path);
-                setAadharFrontBase64Image(Base64Image);
-            }
-            else if(type == 'ADB'){
-                setAadharBackImage(image.path);
-                setAadharBackBase64Image(Base64Image);
-            }
-
-            //var res = await UploadImageToServer(Base64Image, type) 
-            //console.warn("Final Res : ", res.message);
-        }
-
-    }
-
-
-    const [Bottomvisible, setBottomvisible] = useState(false);
-
-    const toggleBottomNavigationView = () => {
-        setBottomvisible(!Bottomvisible);
-    };
 
 
     return(
 
             <View style={styles.BillView}>
 
-            <Button onPress={toggleBottomNavigationView} title="Show Bottom Sheet"/>
-        
-            <BottomSheet isVisible={Bottomvisible} onBackdropPress={toggleBottomNavigationView}>
-                
-            <View style={{backgroundColor:"red"}}>
-                <Button title='close' onPress={toggleBottomNavigationView} buttonStyle={{width:100}} />
-                <Text>Hwlloo</Text>
-                <View style={{height:200}}></View>
-            </View>
-
-            </BottomSheet>
-
                 <ScrollView>
       
                     <View>
                         <ListItem bottomDivider disabled  >
                             <ListItem.Content style={{marginLeft:10, alignItems:"center"}}>
-                                <Avatar onPress={() => SelectImage('US')} rounded source={{uri: UserImage }} size={100} />
-                                <View style={{height:40}}/>
+                                <Text style={{fontSize:20}}>User Details</Text>
+                                <View style={{height:10, borderBottomColor:'red', borderBottomWidth:1, width:'100%'}}/>
+
+                                <View style={{height:20}}/>
+                                <TouchableOpacity onPress={() => SelectImage('US')}>
+                                    <View style={{display:"none"}}>
+                                        <Input ref={UserImageErrFocus}/>
+                                    </View>
+                                    <View  style={[{borderColor:'gray', borderWidth:2, borderRadius:100}, userImageErr ? {borderColor:'red'} : {}]}>
+                                    <Avatar rounded source={{uri: UserImage }} size={100} />
+                                    </View>
+                                </TouchableOpacity>
+                                
+
+                                <View style={{height:20}}/>
                                 
                                 <Input 
                                     value = {user}
@@ -488,17 +654,24 @@ export const CreateBill = (props) => {
                                     style={{fontSize:15}}
                                 />
 
-                                <Image
-                                    source={{ uri: AadharFrontImage }}
-                                    style={{ width: 200, height: 200 }}
-                                    PlaceholderContent={<ActivityIndicator />}
-                                />
+                                <View style={{flexDirection:'row'}}>
+                                    <TouchableOpacity onPress={() => SelectImage('ADF')}>
+                                        <View style={{paddingLeft:20, paddingRight:20, alignItems:'center'}}>
+                                            <Avatar source={{uri: AadharFrontImage }} size={100} />
+                                            <Text style={{marginTop:10, color:'gray', textTransform:'uppercase', fontSize:10}}>Aadhar Front</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => SelectImage('ADB')}>
+                                        <View style={{paddingLeft:20, paddingRight:20, alignItems:'center'}}>
+                                            <Avatar source={{uri: AadharBackImage }} size={100} />
+                                            <Text style={{marginTop:10, color:'gray', textTransform:'uppercase', fontSize:10}}>Aadhar Back</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
 
-                                <Image
-                                    source={{ uri: AadharBackImage }}
-                                    style={{ width: 200, height: 200 }}
-                                    PlaceholderContent={<ActivityIndicator />}
-                                />
+                                <View style={{height:20}} />
+
+
                                 <Input 
                                     value = {pan}
                                     ref={paninput}
@@ -509,23 +682,32 @@ export const CreateBill = (props) => {
                                     placeholder='PAN Number'
                                     autoCapitalize={"characters"}
                                     leftIcon={ <Icon name='vcard-o' size={17} color='gray'/>}
-                                    rightIcon={ <FontAwesome5 onPress={() => SelectImage('PN')} name='upload' size={27} color='gray'/>}
+                                    rightIcon={ <FontAwesome5 onPress={() => SelectImage('PN')} name='upload' size={17} color='gray'/>}
                                     errorStyle={{ color: 'red', textTransform:'capitalize' }}
                                     errorMessage={panErr}
                                     style={{fontSize:15, textTransform:"uppercase"}}
                                 />
 
-                                <Image
-                                    source={{ uri: PanImage }}
-                                    style={{ width: 200, height: 200 }}
-                                    PlaceholderContent={<ActivityIndicator />}
-                                />
+                                <View style={{flexDirection:'row'}}>
+                                    <TouchableOpacity onPress={() => SelectImage('PN')}>
+                                        <View style={{padding:10}}><Avatar source={{uri: PanImage }} size={100} /></View>
+                                    </TouchableOpacity>
+                                </View>
 
                                     
                             <View style={{height:5}}/>
                             </ListItem.Content>
+                        </ListItem>
+
+
+                        <ListItem bottomDivider disabled  >
                             <ListItem.Content style={{marginLeft:10, alignItems:"center"}}>
-                                <Avatar containerStyle={{marginTop:-20}} rounded source={{uri: 'https://www.tourdemelon.com/wp-content/plugins/maxbuttons/images/gopro/icons/responsive.png'}} size={100} />
+                                <View style={{height:40}}/>
+                                <Text style={{fontSize:20}}>Product Details</Text>
+                                <View style={{height:10, borderBottomColor:'red', borderBottomWidth:1, width:'100%'}}/>
+
+                                <View style={{height:40}}/>
+                                <Avatar rounded source={{uri: 'https://www.tourdemelon.com/wp-content/plugins/maxbuttons/images/gopro/icons/responsive.png'}} size={100} />
                                 <View style={{height:40}}/>
 
                                 <Input 
@@ -572,19 +754,24 @@ export const CreateBill = (props) => {
                                     style={{fontSize:15}}
                                 />
 
-                                <CheckBox uncheckedColor="lightgray" title='INCLUDE GST' checkedColor="green" containerStyle={{marginTop:0}} checked={gstcheck} value={gstcheck} onPress={()=> GstCheckFunction()} />
-
-                                <Input disabled inputContainerStyle={[emiFocus ? styles.inputFocused : {}, emiErrStyle ? styles.inputErr : {}, {marginTop:-10, borderBottomWidth:0} ]} />
+                                <CheckBox uncheckedColor="lightgray" title='INCLUDE GST' checkedColor="green" containerStyle={{marginTop:0, width:'100%'}} checked={gstcheck} value={gstcheck} onPress={()=> GstCheckFunction()} />
+                                
+                                {/* <Input disabled inputContainerStyle={[emiFocus ? styles.inputFocused : {}, emiErrStyle ? styles.inputErr : {}, {marginTop:-10, borderBottomWidth:0} ]} /> */}
 
                             
                             <View style={{height:5}}/>
                             </ListItem.Content>
                         </ListItem>
 
-                        <View style={{height:10}}/>
+                        <View style={{height:20}}/>
                         
+
+                        <View style={{alignItems:'center'}}>
+                            <Text style={{fontSize:20}}>Payment Details</Text>
+                            <View style={{height:10, borderBottomColor:'red', borderBottomWidth:1, width:'90%'}}/>
+                        </View>
                         <ListItem bottomDivider disabled >
-                            <ListItem.Content style={{marginLeft:10}}>
+                            <ListItem.Content style={{marginLeft:10, alignItems:'center'}}>
                                 <View style={styles.listStyle}><Text>PRICE</Text><Text><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {firstPrice}</Text></View>
                                 <View style={styles.listStyle}><Text>CGST (9%)</Text><Text><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {gst_cgst}</Text></View>
                                 <View style={styles.listStyle}><Text>SGST (9%)</Text><Text><MaterialCommunityIcons name="currency-inr" size={15} color="gray" /> {gst_sgst}</Text></View>
@@ -631,7 +818,10 @@ export const CreateBill = (props) => {
                                         errorMessage={partpaymentErr}
                                     />
                                 </View>
+
                                 <View style={{marginTop:20}}>
+                                    <ActivityIndicator style={{display:LoaderIcon}} size="small" color="gray" />
+                                    <View style={{height:10}}/>
                                     <Button title='CONFIRM' titleStyle={{fontSize:12}} onPress={PayPaymentFunction} buttonStyle={{backgroundColor:'green', width:150, height:35}} />
                                     <Button title='CANCEL' titleStyle={{fontSize:12}} onPress={()=>toggleOverlay()} buttonStyle={{backgroundColor:'brown', width:150, height:35, marginTop:10}} />
                                 </View>
@@ -760,6 +950,9 @@ export const CreateBill = (props) => {
 
                             </ScrollView>
 
+                            <View>
+                                <ActivityIndicator style={{display:LoaderIcon}} size="small" color="gray" />
+                            </View>
                             <View style={{marginTop:20, alignItems:'center', flexDirection:'row', justifyContent:'flex-end'}}>
                                 <Button title='CONFIRM' titleStyle={{fontSize:12}} onPress={PayEmiPaymentFunction} buttonStyle={{backgroundColor:'green', width:100, height:40}} />
                                 <Button title='CANCEL' titleStyle={{fontSize:12}} onPress={()=>toggleEmiOverlay()} buttonStyle={{backgroundColor:'brown', width:100, height:40, marginLeft:10}} />
@@ -773,6 +966,43 @@ export const CreateBill = (props) => {
                 </View>
              
                 </ScrollView>
+            
+                <SafeAreaView>
+
+                    <BottomSheet isVisible={Bottomvisible} modalProps={{onBackdropPress:{toggleBottomNavigationView}}} >
+                        <View style={{backgroundColor:"#2980B9", flex:1, height:200}}>
+                            <View style={{flexDirection:"row", justifyContent:'space-evenly', padding:50}}>
+                                <TouchableOpacity onPress={() => SelectImageSection('cam')}>
+                                    <View style={styles.BottomViewStyle}>
+                                        <FontAwesome5 name='camera-retro' size={40} color='gray'/>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => SelectImageSection('fil')}>
+                                    <View style={styles.BottomViewStyle}>
+                                        <FontAwesome5 name='folder-plus' size={40} color='gray'/>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={{backgroundColor:'brown', height:'100%', position:'absolute', right:0}}>
+                                <TouchableOpacity onPress={toggleBottomNavigationView}>
+                                    <View onPress={toggleBottomNavigationView} style={{padding:20, alignItems:'center'}}>
+                                        <Text style={{color:'white', marginTop:5}}>C</Text>
+                                        <Text style={{color:'white', marginTop:5}}>L</Text>
+                                        <Text style={{color:'white', marginTop:5}}>O</Text>
+                                        <Text style={{color:'white', marginTop:5}}>S</Text>
+                                        <Text style={{color:'white', marginTop:5}}>E</Text>
+                                        <FontAwesome5 onPress={toggleBottomNavigationView} name='window-close' size={20} color='white' style={{marginTop:10}} />
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                                    
+
+                        </View>
+                    </BottomSheet>
+                </SafeAreaView>
+
+            
             </View>
 
 
@@ -848,21 +1078,12 @@ const styles = StyleSheet.create({
         
     },
 
-    bottomNavigationView: {
+    BottomViewStyle: {
         backgroundColor: '#fff',
-        width: '100%',
-        height: 250,
-        justifyContent: 'center',
-        alignItems: 'center',
+        padding:30,
+        borderRadius:100,
     },
 
-    container: {
-        flex: 1,
-        margin: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#E0F7FA',
-      },
 
 });
 

@@ -117,6 +117,29 @@ const User = function(user) {
     });
   };
 
+
+  User.get_specific_customer_details = (cust_id, result) => {
+    sql.query('select * from customer_details where id = '+cust_id+'', (err, res) =>{
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (!res.length) {
+        result(null, null);
+        return;
+      }
+
+      if (res.length) {
+        result(null, res);
+        return;
+      }
+
+      result({ kind: "not_found" }, null);
+    });
+  };
+
   User.get_bill_details = (user_id, result) => {
     sql.query('select * from bill_details where user_id = '+user_id+' ORDER BY DATE DESC LIMIT 0,1000 ', (err, res) =>{
       if (err) {
@@ -226,9 +249,9 @@ const User = function(user) {
     });
   };
 
-  User.create_new_customer = (user_id, name, contact, address, aadhar, pan, result) => {
+  User.create_new_customer = (user_id, name, contact, address, aadhar, pan, u_image, adf_image, adb_image, pan_image, result) => {
     var date = CurDate();
-    sql.query("INSERT INTO customer_details SET user_id = ?, name = ?, contact = ?, address = ?, aadhar = ?, pan = ?, date = ?", [user_id, name, contact, address, aadhar, pan, date], (err, res) => {
+    sql.query("INSERT INTO customer_details SET user_id = ?, user_image = ?, name = ?, contact = ?, address = ?, aadhar = ?, aadhar_front_image = ?, aadhar_back_image = ?, pan = ?, pan_image = ?, date = ?", [user_id, u_image, name, contact, address, aadhar, adf_image, adb_image, pan, pan_image, date], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);

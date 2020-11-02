@@ -203,13 +203,13 @@ module.exports = app =>{
 
     // create new emi payment
     app.post("/upload_image_to_server",VerifyToken,(req, res) =>{
-       jwt.verify(req.token, jwtsc, async (err, auth) => {
+        jwt.verify(req.token, jwtsc, async (err, auth) => {
             if(err) {
                 res.json({ message: "unauthorized" });
             } else {
                 UploadImage(req, res);
             }
-          });
+        });
     });
 
 
